@@ -1,0 +1,124 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: postgres
+      changes:
+        - createTable:
+            tableName: Users
+            columns:
+              - column:
+                  name: user_id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: user_name
+                  type: varchar(50)
+              - column:
+                  name: email
+                  type: varchar(50)
+                  constraints:
+                    unique: true
+              - column:
+                  name: password
+                  type: varchar(50)
+  - changeSet:
+      id: 2
+      author: your_name
+      changes:
+        - createTable:
+            tableName: Events
+            columns:
+              - column:
+                  name: event_id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: title
+                  type: varchar(100)
+              - column:
+                  name: description
+                  type: text
+              - column:
+                  name: event_date
+                  type: timestamp
+              - column:
+                  name: location
+                  type: varchar(100)
+  - changeSet:
+      id: 3
+      author: your_name
+      changes:
+        - createTable:
+            tableName: Participants
+            columns:
+              - column:
+                  name: participant_id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: user_id
+                  type: int
+              - column:
+                  name: event_id
+                  type: int
+              - addForeignKeyConstraint:
+                  baseColumnNames: user_id
+                  baseTableName: Participants
+                  constraintName: fk_participants_users
+                  referencedColumnNames: user_id
+                  referencedTableName: Users
+              - addForeignKeyConstraint:
+                  baseColumnNames: event_id
+                  baseTableName: Participants
+                  constraintName: fk_participants_events
+                  referencedColumnNames: event_id
+                  referencedTableName: Events
+  - changeSet:
+      id: 4
+      author: your_name
+      changes:
+        - createTable:
+            tableName: Comments
+            columns:
+              - column:
+                  name: comment_id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: event_id
+                  type: int
+              - column:
+                  name: user_id
+                  type: int
+              - column:
+                  name: comment
+                  type: text
+              - column:
+                  name: rating
+                  type: int
+                  constraints:
+                    nullable: false
+                    checkConstraint: rating >= 1 AND rating <= 10
+              - column:
+                  name: comment_date
+                  type: timestamp
+              - addForeignKeyConstraint:
+                  baseColumnNames: event_id
+                  baseTableName: Comments
+                  constraintName: fk_comments_events
+                  referencedColumnNames: event_id
+                  referencedTableName: Events
+              - addForeignKeyConstraint:
+                  baseColumnNames: user_id
+                  baseTableName: Comments
+                  constraintName: fk_comments_users
+                  referencedColumnNames: user_id
+                  referencedTableName: Users

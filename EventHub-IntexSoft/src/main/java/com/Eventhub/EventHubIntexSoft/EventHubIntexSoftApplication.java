@@ -1,4 +1,4 @@
-package com.example.EventHubIntexSoft;
+package com.Eventhub.EventHubIntexSoft;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

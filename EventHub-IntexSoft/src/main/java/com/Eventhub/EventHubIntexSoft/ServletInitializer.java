@@ -1,4 +1,4 @@
-package com.example.EventHubIntexSoft;
+package com.Eventhub.EventHubIntexSoft;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;

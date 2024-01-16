@@ -1,0 +1,68 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1" author="postgres">
+        <createTable tableName="Users">
+            <column name="user_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="user_name" type="varchar(50)" />
+            <column name="email" type="varchar(50)">
+                <constraints unique="true" />
+            </column>
+            <column name="password" type="varchar(50)" />
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="postgres">
+        <createTable tableName="Events">
+            <column name="event_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="title" type="varchar(100)" />
+            <column name="description" type="text" />
+            <column name="event_date" type="timestamp" />
+            <column name="location" type="varchar(100)" />
+        </createTable>
+    </changeSet>
+
+    <changeSet id="3" author="postgres">
+        <createTable tableName="Participants">
+            <column name="participant_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="user_id" type="int" />
+            <column name="event_id" type="int" />
+        </createTable>
+        <addForeignKeyConstraint baseTableName="Participants" baseColumnNames="user_id"
+                                 constraintName="fk_participants_users"
+                                 referencedTableName="Users" referencedColumnNames="user_id" />
+        <addForeignKeyConstraint baseTableName="Participants" baseColumnNames="event_id"
+                                 constraintName="fk_participants_events"
+                                 referencedTableName="Events" referencedColumnNames="event_id" />
+    </changeSet>
+
+    <changeSet id="4" author="postgres">
+        <createTable tableName="Comments">
+            <column name="comment_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="event_id" type="int" />
+            <column name="user_id" type="int" />
+            <column name="comment" type="text" />
+            <column name="rating" type="int">
+                <!--todo - add a rating check condition at the database level-->
+            </column>
+            <column name="comment_date" type="timestamp" />
+        </createTable>
+        <addForeignKeyConstraint baseTableName="Comments" baseColumnNames="event_id"
+                                 constraintName="fk_comments_events"
+                                 referencedTableName="Events" referencedColumnNames="event_id" />
+        <addForeignKeyConstraint baseTableName="Comments" baseColumnNames="user_id"
+                                 constraintName="fk_comments_users"
+                                 referencedTableName="Users" referencedColumnNames="user_id" />
+    </changeSet>
+
+</databaseChangeLog>
