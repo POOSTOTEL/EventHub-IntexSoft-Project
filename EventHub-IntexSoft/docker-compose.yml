@@ -1,8 +1,8 @@
 version: '3.5'
 
 services:
-  EventHub_DB_postgres:
-    container_name: EventHub_DB_postgres
+  EventHub_DB_PostgreSQL:
+    container_name: EventHub_DB_PostgreSQL
     image: postgres:16
     environment:
       POSTGRES_DB: "eventhub"
@@ -11,4 +11,19 @@ services:
       PGDATA: /data/postgres
     ports:
       - "5455:5432"
+    restart: unless-stopped
+
+  eventhub_app_springboot:
+    container_name: eventhub_app_springboot
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8080"
+    depends_on:
+      - EventHub_DB_PostgreSQL
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://EventHub_DB_PostgreSQL:5432/eventhub
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: root
     restart: unless-stopped

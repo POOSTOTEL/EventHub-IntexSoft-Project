@@ -1,13 +1,16 @@
 package com.Eventhub.EventHubIntexSoft.mapper;
 
-import com.Eventhub.EventHubIntexSoft.DTO.EventDTO;
+import com.Eventhub.EventHubIntexSoft.DTO.EventDto;
 import com.Eventhub.EventHubIntexSoft.entity.Event;
+import org.mapstruct.Mapper;
 
-public abstract class EventMapper {
-    public static EventDTO toDTO (Event event) {
-        return new EventDTO(event.getId(), event.getTitle(), event.getDescription(), event.getEventDate(), event.getLocation());
-    }
-    public static Event toEvent(EventDTO eventDTO) {
-        return new Event(eventDTO.getId(), eventDTO.getTitle(), eventDTO.getDescription(), eventDTO.getEventDate(), eventDTO.getLocation());
-    }
+import static org.mapstruct.factory.Mappers.getMapper;
+
+@Mapper(componentModel = "spring")
+public interface EventMapper {
+    EventMapper instance = getMapper(EventMapper.class);
+
+    EventDto toEventDto(Event event);
+
+    Event toEvent(EventDto eventDto);
 }

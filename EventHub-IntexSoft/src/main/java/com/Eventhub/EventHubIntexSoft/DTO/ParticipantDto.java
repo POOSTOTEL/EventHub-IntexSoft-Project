@@ -1,13 +1,12 @@
 package com.Eventhub.EventHubIntexSoft.DTO;
 
-import com.Eventhub.EventHubIntexSoft.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ParticipantDTO {
+public class ParticipantDto {
     private Long id;
-    private UserDTO userDTO;
-    private EventDTO eventDTO;
+    private UserDto userDTO;
+    private EventDto eventDTO;
 }

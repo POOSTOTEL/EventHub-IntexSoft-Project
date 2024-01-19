@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet id="Inserting into users table" author="poostotel">
+        <insert tableName="users">
+            <column name="user_name" value="User1"/>
+            <column name="user_email" value="user1@example.com"/>
+            <column name="password" value="password1"/>
+        </insert>
+        <insert tableName="users">
+            <column name="user_name" value="User2"/>
+            <column name="user_email" value="user2@example.com"/>
+            <column name="password" value="password2"/>
+        </insert>
+        <insert tableName="users">
+            <column name="user_name" value="User3"/>
+            <column name="user_email" value="user3@example.com"/>
+            <column name="password" value="password3"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="Inserting into events table" author="poostotel">
+        <insert tableName="events">
+            <column name="title" value="Event1"/>
+            <column name="description" value="This is event 1"/>
+            <column name="event_date" value="2024-02-20 10:00:00"/>
+            <column name="location" value="Location1"/>
+        </insert>
+        <insert tableName="events">
+            <column name="title" value="Event2"/>
+            <column name="description" value="This is event 2"/>
+            <column name="event_date" value="2024-03-15 15:00:00"/>
+            <column name="location" value="Location2"/>
+        </insert>
+        <insert tableName="events">
+            <column name="title" value="Event3"/>
+            <column name="description" value="This is event 3"/>
+            <column name="event_date" value="2024-04-25 20:00:00"/>
+            <column name="location" value="Location3"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="Inserting into participants table" author="poostotel">
+        <insert tableName="participants">
+            <column name="user_id" valueNumeric="1"/>
+            <column name="event_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="participants">
+            <column name="user_id" valueNumeric="1"/>
+            <column name="event_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="participants">
+            <column name="user_id" valueNumeric="2"/>
+            <column name="event_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="participants">
+            <column name="user_id" valueNumeric="3"/>
+            <column name="event_id" valueNumeric="3"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="Inserting into comments table" author="poostotel">
+        <insert tableName="comments">
+            <column name="event_id" valueNumeric="1"/>
+            <column name="user_id" valueNumeric="1"/>
+            <column name="comment" value="Great event!"/>
+            <column name="rating" valueNumeric="8"/>
+            <column name="comment_date" value="2024-02-20 12:00:00"/>
+        </insert>
+        <insert tableName="comments">
+            <column name="event_id" valueNumeric="1"/>
+            <column name="user_id" valueNumeric="2"/>
+            <column name="comment" value="I enjoyed this event."/>
+            <column name="rating" valueNumeric="7"/>
+            <column name="comment_date" value="2024-02-20 12:30:00"/>
+        </insert>
+        <insert tableName="comments">
+            <column name="event_id" valueNumeric="2"/>
+            <column name="user_id" valueNumeric="1"/>
+            <column name="comment" value="Interesting event."/>
+            <column name="rating" valueNumeric="9"/>
+            <column name="comment_date" value="2024-03-15 17:00:00"/>
+        </insert>
+        <insert tableName="comments">
+            <column name="event_id" valueNumeric="3"/>
+            <column name="user_id" valueNumeric="3"/>
+            <column name="comment" value="Amazing event!"/>
+            <column name="rating" valueNumeric="10"/>
+            <column name="comment_date" value="2024-04-25 22:00:00"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
