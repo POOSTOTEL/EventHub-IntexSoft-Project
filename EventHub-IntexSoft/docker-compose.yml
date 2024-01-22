@@ -14,12 +14,12 @@ services:
     restart: unless-stopped
 
   eventhub_app_springboot:
-    container_name: eventhub_app_springboot
+    container_name: EventHub_App_SpringBoot
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8082:8080"
+      - "8082:8082"
     depends_on:
       - EventHub_DB_PostgreSQL
     environment:

@@ -10,7 +10,7 @@ import java.util.List;
 
 import static org.mapstruct.factory.Mappers.getMapper;
 
-@Mapper(componentModel = "spring", uses = EventMapper.class)
+@Mapper(componentModel = "spring", uses = {UserMapper.class, EventMapper.class})
 public interface ParticipantListMapper {
     ParticipantListMapper instance = getMapper(ParticipantListMapper.class);
     List<Participant> toParticipantList(List<ParticipantDto> dtoList);

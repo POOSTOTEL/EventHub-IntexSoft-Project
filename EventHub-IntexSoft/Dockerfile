@@ -5,7 +5,7 @@ FROM openjdk:21
 WORKDIR /app
 
 # Копируйте файл .jar в рабочую директорию
-COPY build/libs/EventHub-IntexSoft-0.0.1-SNAPSHOT-plain.jar /app
+COPY build/libs/EventHub-IntexSoft-0.0.1-SNAPSHOT.jar /app
 
 # Запустите приложение
-CMD ["java", "-jar", "EventHub-IntexSoft-0.0.1-SNAPSHOT-plain.jar"]
+CMD ["java", "-jar", "EventHub-IntexSoft-0.0.1-SNAPSHOT.jar"]
