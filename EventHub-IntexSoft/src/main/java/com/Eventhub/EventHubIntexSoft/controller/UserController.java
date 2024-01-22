@@ -2,11 +2,9 @@ package com.Eventhub.EventHubIntexSoft.controller;
 
 import com.Eventhub.EventHubIntexSoft.DTO.UserDto;
 import com.Eventhub.EventHubIntexSoft.entity.User;
-import com.Eventhub.EventHubIntexSoft.mapper.UserMapper;
 import com.Eventhub.EventHubIntexSoft.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
