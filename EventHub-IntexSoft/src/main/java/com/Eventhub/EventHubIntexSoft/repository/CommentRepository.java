@@ -4,11 +4,11 @@ import com.Eventhub.EventHubIntexSoft.entity.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-    void deleteAllByUserId(Long id);
+  void deleteAllByUserId(Long id);
 
-    void deleteAllByEventId(Long id);
+  void deleteAllByEventId(Long id);
 
-    Comment findCommentById(Long id);
+  Comment findCommentById(Long id);
 
-    void deleteCommentById(Long id);
+  void deleteCommentById(Long id);
 }

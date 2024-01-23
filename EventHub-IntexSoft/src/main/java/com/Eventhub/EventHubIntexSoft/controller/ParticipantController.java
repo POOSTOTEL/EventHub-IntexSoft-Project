@@ -2,49 +2,53 @@ package com.Eventhub.EventHubIntexSoft.controller;
 
 import com.Eventhub.EventHubIntexSoft.DTO.ParticipantDto;
 import com.Eventhub.EventHubIntexSoft.entity.Participant;
-import com.Eventhub.EventHubIntexSoft.service.ParticipantService;
+import com.Eventhub.EventHubIntexSoft.service.Impl.ParticipantServiceImpl;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.Optional;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/participant")
 public class ParticipantController {
-    private final ParticipantService participantService;
+  private final ParticipantServiceImpl participantServiceImpl;
 
-    @GetMapping("/all")
-    public ResponseEntity<List<ParticipantDto>> allParticipants() {
-        return ResponseEntity.ok(participantService.getAllParticipants());
-    }
+  @GetMapping("/all")
+  public ResponseEntity<List<ParticipantDto>> allParticipants() {
+    return ResponseEntity.ok(participantServiceImpl.getAllParticipants());
+  }
 
-    @PostMapping("/create")
-    public ResponseEntity<ParticipantDto> createParticipant(@RequestBody Participant participant) {
-        return new ResponseEntity<>(participantService.createParticipant(participant).get(), HttpStatus.CREATED);
-    }
+  @PostMapping
+  public ResponseEntity<ParticipantDto> createParticipant(@RequestBody Participant participant) {
+    return participantServiceImpl
+        .createParticipant(participant)
+        .map(participantDto -> new ResponseEntity<>(participantDto, HttpStatus.OK))
+        .orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
+  }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Optional<ParticipantDto>> getParticipant(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(participantService.getParticipant(id));
-    }
+  @GetMapping("/{id}")
+  public ResponseEntity<ParticipantDto> getParticipantById(@PathVariable("id") Long id) {
+    return participantServiceImpl
+        .getParticipantById(id)
+        .map(participantDto -> new ResponseEntity<>(participantDto, HttpStatus.OK))
+        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+  }
 
-    @PostMapping("/update")
-    public ResponseEntity<Optional<ParticipantDto>> updateParticipant(@RequestBody Participant participant) {
-        return ResponseEntity.ok(participantService.updateParticipant(participant));
-    }
+  @PutMapping
+  public ResponseEntity<ParticipantDto> updateParticipant(
+      @RequestBody ParticipantDto participantDto) {
+    return participantServiceImpl
+        .updateParticipant(participantDto)
+        .map(participantDataTransferObject -> new ResponseEntity<>(participantDto, HttpStatus.OK))
+        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+  }
 
-    @GetMapping("/delete/{id}")
-    public ResponseEntity<String> deleteParticipant(@PathVariable("id") Long id) {
-        participantService.deleteParticipant(id);
-        return ResponseEntity.ok("Participant with id " + id + " deleted.");
-    }
+  @DeleteMapping("/{id}")
+  public ResponseEntity<String> deleteParticipant(@PathVariable("id") Long id) {
+    return participantServiceImpl.deleteParticipantById(id)
+        ? ResponseEntity.ok("Participant with id " + id + " deleted.")
+        : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+  }
 }
