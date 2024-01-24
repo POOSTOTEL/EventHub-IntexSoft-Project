@@ -31,7 +31,7 @@ public class UserController {
   @GetMapping("/{id}")
   public ResponseEntity<UserDto> getUserById(@PathVariable("id") Long id) {
     return userServiceImpl
-        .getUserById(id)
+        .getUserByUserId(id)
         .map(userDto -> new ResponseEntity<>(userDto, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
@@ -46,7 +46,7 @@ public class UserController {
 
   @DeleteMapping("/{id}")
   public ResponseEntity<String> deleteUser(@PathVariable("id") Long id) {
-    return userServiceImpl.deleteUserById(id)
+    return userServiceImpl.deleteUserByUserId(id)
         ? ResponseEntity.ok("User with id " + id + " deleted.")
         : new ResponseEntity<>(HttpStatus.NOT_FOUND);
   }

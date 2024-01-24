@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class EventDto {
-  private Long id;
+  private Long eventId;
   private String title;
   private String description;
   private LocalDateTime eventDate;

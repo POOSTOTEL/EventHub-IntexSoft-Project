@@ -11,7 +11,6 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -27,12 +26,12 @@ public class UserServiceImpl implements UserService {
     return Optional.ofNullable(UserMapper.instance.toUserDto(userRepository.save(user)));
   }
 
-  public Optional<UserDto> getUserById(Long id) {
-    return Optional.ofNullable(UserMapper.instance.toUserDto(userRepository.findUserById(id)));
+  public Optional<UserDto> getUserByUserId(Long userId) {
+    return Optional.ofNullable(UserMapper.instance.toUserDto(userRepository.findUserByUserId(userId)));
   }
 
   public Optional<UserDto> updateUser(UserDto userDto) {
-    return Optional.ofNullable(userRepository.findUserById(userDto.getId()))
+    return Optional.ofNullable(userRepository.findUserByUserId(userDto.getUserId()))
         .filter(
             user ->
                 userRepository
@@ -49,12 +48,12 @@ public class UserServiceImpl implements UserService {
             });
   }
 
-  @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
-  public boolean deleteUserById(Long id) {
-    return Optional.ofNullable(userRepository.findUserById(id))
+  @Transactional(isolation = Isolation.READ_COMMITTED)
+  public boolean deleteUserByUserId(Long userId) {
+    return Optional.ofNullable(userRepository.findUserById(userId))
         .map(
             user -> {
-              userRepository.deleteUserById(id);
+              userRepository.deleteUserById(userId);
               return true;
             })
         .orElse(false);

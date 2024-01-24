@@ -29,9 +29,9 @@ public class EventController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<EventDto> getEventById(@PathVariable("id") Long id) {
+  public ResponseEntity<EventDto> getEventById(@PathVariable("id") Long eventId) {
     return eventServiceImpl
-        .getEventById(id)
+        .getEventByEventId(eventId)
         .map(eventDto -> new ResponseEntity<>(eventDto, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
@@ -46,9 +46,9 @@ public class EventController {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<String> deleteEvent(@PathVariable("id") Long id) {
-    return eventServiceImpl.deleteEventById(id)
-        ? ResponseEntity.ok("Event with id " + id + " deleted.")
+  public ResponseEntity<String> deleteEvent(@PathVariable("id") Long eventId) {
+    return eventServiceImpl.deleteEventByEventId(eventId)
+        ? ResponseEntity.ok("Event with id " + eventId + " deleted.")
         : new ResponseEntity<>(HttpStatus.NOT_FOUND);
   }
 }

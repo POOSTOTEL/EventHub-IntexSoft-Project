@@ -10,9 +10,9 @@ public interface EventService {
 
   Optional<EventDto> createEvent(Event event);
 
-  Optional<EventDto> getEventById(Long id);
+  Optional<EventDto> getEventByEventId(Long eventId);
 
   Optional<EventDto> updateEvent(EventDto eventDto);
 
-  boolean deleteEventById(Long id);
+  boolean deleteEventByEventId(Long eventId);
 }

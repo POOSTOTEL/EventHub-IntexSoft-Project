@@ -10,9 +10,9 @@ public interface CommentService {
 
   Optional<CommentDto> createComment(Comment comment);
 
-  Optional<CommentDto> getCommentById(Long id);
+  Optional<CommentDto> getCommentByCommentId(Long commentId);
 
   Optional<CommentDto> updateComment(CommentDto commentDto);
 
-  boolean deleteCommentById(Long id);
+  boolean deleteCommentByCommentId(Long commentId);
 }

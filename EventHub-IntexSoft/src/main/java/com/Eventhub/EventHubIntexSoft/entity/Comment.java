@@ -19,7 +19,7 @@ public class Comment {
       sequenceName = "comments_comment_id_seq",
       allocationSize = 1)
   @Column(name = "comment_id")
-  private Long id;
+  private Long commentId;
 
   @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
   @JoinColumn(name = "event_id", nullable = false)

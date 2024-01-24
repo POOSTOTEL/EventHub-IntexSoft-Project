@@ -10,7 +10,7 @@ public interface UserService {
 
   Optional<UserDto> createUser(User user);
 
-  Optional<UserDto> getUserById(Long id);
+  Optional<UserDto> getUserByUserId(Long userId);
 
-  boolean deleteUserById(Long id);
+  boolean deleteUserByUserId(Long userId);
 }

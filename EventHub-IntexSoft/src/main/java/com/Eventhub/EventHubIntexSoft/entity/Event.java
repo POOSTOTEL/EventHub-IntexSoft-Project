@@ -22,7 +22,7 @@ public class Event {
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "events_seq")
   @SequenceGenerator(name = "events_seq", sequenceName = "events_event_id_seq", allocationSize = 1)
   @Column(name = "event_id")
-  private Long id;
+  private Long eventId;
 
   @Column(name = "title", nullable = false)
   private String title;

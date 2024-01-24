@@ -4,7 +4,6 @@ import com.Eventhub.EventHubIntexSoft.DTO.CommentDto;
 import com.Eventhub.EventHubIntexSoft.entity.Comment;
 import com.Eventhub.EventHubIntexSoft.service.Impl.CommentServiceImpl;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,23 +22,34 @@ public class CommentController {
 
   @PostMapping
   public ResponseEntity<CommentDto> createComment(@RequestBody Comment comment) {
-    return new ResponseEntity<>(
-        commentServiceImpl.createComment(comment).get(), HttpStatus.CREATED);
+    return commentServiceImpl
+        .createComment(comment)
+        .map(commentDto -> new ResponseEntity<>(commentDto, HttpStatus.OK))
+        .orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Optional<CommentDto>> getCommentById(@PathVariable("id") Long id) {
-    return ResponseEntity.ok(commentServiceImpl.getCommentById(id));
+  public ResponseEntity<CommentDto> getCommentById(@PathVariable("id") Long commentId) {
+    return commentServiceImpl
+        .getCommentByCommentId(commentId)
+        .map(commentDto -> new ResponseEntity<>(commentDto, HttpStatus.OK))
+        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
   @PutMapping
-  public ResponseEntity<Optional<CommentDto>> updateComment(@RequestBody CommentDto commentDto) {
-    return ResponseEntity.ok(commentServiceImpl.updateComment(commentDto));
+  public ResponseEntity<CommentDto> updateComment(@RequestBody CommentDto commentDto) {
+    return commentServiceImpl
+        .updateComment(commentDto)
+        .map(
+            commentDataTransferObject ->
+                new ResponseEntity<>(commentDataTransferObject, HttpStatus.OK))
+        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<String> deleteComment(@PathVariable("id") Long id) {
-    commentServiceImpl.deleteCommentById(id);
-    return ResponseEntity.ok("Comment with id " + id + " deleted.");
+  public ResponseEntity<String> deleteComment(@PathVariable("id") Long commentId) {
+    return commentServiceImpl.deleteCommentByCommentId(commentId)
+        ? ResponseEntity.ok("Comment with id " + commentId + " deleted.")
+        : new ResponseEntity<>(HttpStatus.NOT_FOUND);
   }
 }

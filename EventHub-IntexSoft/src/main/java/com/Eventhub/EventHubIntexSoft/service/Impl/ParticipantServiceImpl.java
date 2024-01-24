@@ -11,7 +11,6 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -28,24 +27,24 @@ public class ParticipantServiceImpl implements ParticipantService {
         ParticipantMapper.instance.toParticipantDto(participantRepository.save(participant)));
   }
 
-  public Optional<ParticipantDto> getParticipantById(Long id) {
+  public Optional<ParticipantDto> getParticipantByParticipantId(Long participantId) {
     return Optional.ofNullable(
-        ParticipantMapper.instance.toParticipantDto(participantRepository.findParticipantById(id)));
+        ParticipantMapper.instance.toParticipantDto(participantRepository.findParticipantByParticipantId(participantId)));
   }
 
   public Optional<ParticipantDto> updateParticipant(ParticipantDto participantDto) {
     // todo придумать, что будем обновлять.
     return Optional.ofNullable(
         ParticipantMapper.instance.toParticipantDto(
-            participantRepository.findParticipantById(participantDto.getId())));
+            participantRepository.findParticipantByParticipantId(participantDto.getParticipantId())));
   }
 
-  @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
-  public boolean deleteParticipantById(Long id) {
-    return Optional.ofNullable(participantRepository.findParticipantById(id))
+  @Transactional(isolation = Isolation.READ_COMMITTED)
+  public boolean deleteParticipantByParticipantId(Long participantId) {
+    return Optional.ofNullable(participantRepository.findParticipantByParticipantId(participantId))
         .map(
             user -> {
-              participantRepository.deleteParticipantById(id);
+              participantRepository.deleteParticipantByParticipantId(participantId);
               return true;
             })
         .orElse(false);

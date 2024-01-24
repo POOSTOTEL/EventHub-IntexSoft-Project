@@ -5,9 +5,9 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
-  Event findEventById(Long id);
+  Event findEventByEventId(Long id);
 
-  void deleteEventById(Long id);
+  void deleteEventByEventId(Long id);
 
   List<Event> findAllByTitle(String title);
 }

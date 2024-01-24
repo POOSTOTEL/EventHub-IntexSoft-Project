@@ -10,9 +10,9 @@ public interface ParticipantService {
 
   Optional<ParticipantDto> createParticipant(Participant participant);
 
-  Optional<ParticipantDto> getParticipantById(Long id);
+  Optional<ParticipantDto> getParticipantByParticipantId(Long participantId);
 
   Optional<ParticipantDto> updateParticipant(ParticipantDto participantDto);
 
-  boolean deleteParticipantById(Long id);
+  boolean deleteParticipantByParticipantId(Long participantId);
 }

@@ -18,13 +18,13 @@ public class Participant {
       sequenceName = "participants_participant_id_seq",
       allocationSize = 1)
   @Column(name = "participant_id")
-  private Long id;
+  private Long participantId;
 
-  @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+  @ManyToOne(cascade = CascadeType.REMOVE)
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
-  @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+  @ManyToOne(cascade = CascadeType.REMOVE)
   @JoinColumn(name = "event_id", nullable = false)
   private Event event;
 }

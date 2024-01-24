@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ParticipantDto {
-  private Long id;
+  private Long participantId;
   private UserDto userDTO;
   private EventDto eventDTO;
 }

@@ -11,7 +11,6 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -28,14 +27,14 @@ public class CommentServiceImpl implements CommentService {
         CommentMapper.instance.toCommentDto(commentRepository.save(comment)));
   }
 
-  public Optional<CommentDto> getCommentById(Long id) {
+  public Optional<CommentDto> getCommentByCommentId(Long commentId) {
     return Optional.ofNullable(
-        CommentMapper.instance.toCommentDto(commentRepository.findCommentById(id)));
+        CommentMapper.instance.toCommentDto(commentRepository.findCommentByCommentId(commentId)));
   }
 
   public Optional<CommentDto> updateComment(CommentDto commentDto) {
 
-    return Optional.ofNullable(commentRepository.findCommentById(commentDto.getId()))
+    return Optional.ofNullable(commentRepository.findCommentByCommentId(commentDto.getCommentId()))
         .map(
             comment -> {
               Optional.ofNullable(commentDto.getComment()).ifPresent(comment::setComment);
@@ -44,12 +43,12 @@ public class CommentServiceImpl implements CommentService {
             });
   }
 
-  @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
-  public boolean deleteCommentById(Long id) {
-    return Optional.ofNullable(commentRepository.findCommentById(id))
+  @Transactional(isolation = Isolation.READ_COMMITTED)
+  public boolean deleteCommentByCommentId(Long commentId) {
+    return Optional.ofNullable(commentRepository.findCommentByCommentId(commentId))
         .map(
             user -> {
-              commentRepository.deleteCommentById(id);
+              commentRepository.deleteCommentByCommentId(commentId);
               return true;
             })
         .orElse(false);

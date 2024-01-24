@@ -29,9 +29,9 @@ public class ParticipantController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<ParticipantDto> getParticipantById(@PathVariable("id") Long id) {
+  public ResponseEntity<ParticipantDto> getParticipantById(@PathVariable("id") Long participantId) {
     return participantServiceImpl
-        .getParticipantById(id)
+        .getParticipantByParticipantId(participantId)
         .map(participantDto -> new ResponseEntity<>(participantDto, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
@@ -46,9 +46,9 @@ public class ParticipantController {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<String> deleteParticipant(@PathVariable("id") Long id) {
-    return participantServiceImpl.deleteParticipantById(id)
-        ? ResponseEntity.ok("Participant with id " + id + " deleted.")
+  public ResponseEntity<String> deleteParticipant(@PathVariable("id") Long participantId) {
+    return participantServiceImpl.deleteParticipantByParticipantId(participantId)
+        ? ResponseEntity.ok("Participant with id " + participantId + " deleted.")
         : new ResponseEntity<>(HttpStatus.NOT_FOUND);
   }
 }

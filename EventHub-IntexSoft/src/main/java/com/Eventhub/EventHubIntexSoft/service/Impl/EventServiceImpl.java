@@ -11,7 +11,6 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -27,12 +26,12 @@ public class EventServiceImpl implements EventService {
     return Optional.ofNullable(EventMapper.instance.toEventDto(eventRepository.save(event)));
   }
 
-  public Optional<EventDto> getEventById(Long id) {
-    return Optional.ofNullable(EventMapper.instance.toEventDto(eventRepository.findEventById(id)));
+  public Optional<EventDto> getEventByEventId(Long eventId) {
+    return Optional.ofNullable(EventMapper.instance.toEventDto(eventRepository.findEventByEventId(eventId)));
   }
 
   public Optional<EventDto> updateEvent(EventDto eventDto) {
-    return Optional.ofNullable(eventRepository.findEventById(eventDto.getId()))
+    return Optional.ofNullable(eventRepository.findEventByEventId(eventDto.getEventId()))
         .filter(
             event ->
                 eventRepository.findAllByTitle(eventDto.getTitle()).isEmpty()
@@ -47,12 +46,12 @@ public class EventServiceImpl implements EventService {
             });
   }
 
-  @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
-  public boolean deleteEventById(Long id) {
-    return Optional.ofNullable(eventRepository.findEventById(id))
+  @Transactional(isolation = Isolation.READ_COMMITTED)
+  public boolean deleteEventByEventId(Long eventId) {
+    return Optional.ofNullable(eventRepository.findEventByEventId(eventId))
         .map(
             event -> {
-              eventRepository.deleteEventById(id);
+              eventRepository.deleteEventByEventId(eventId);
               return true;
             })
         .orElse(false);
