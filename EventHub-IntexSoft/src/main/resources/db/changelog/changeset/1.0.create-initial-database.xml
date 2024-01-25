@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="Creating table users" author="poostotel">
+        <createTable tableName="users" remarks="The table of all application users contains authorization information.">
+            <column name="user_id" type="serial" remarks="Serial numbers of users in the database.">
+                <constraints primaryKey="true" primaryKeyName="user_id"/>
+            </column>
+            <column name="user_name" type="varchar(50)" remarks="Unique username for authorization."/>
+            <column name="user_email" type="varchar(50)" remarks="E-mail address for alternative authorization.">
+                <constraints unique="true"/>
+            </column>
+            <column name="password" type="varchar(50)" remarks="User password for authorization."/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="Creating table events" author="poostotel">
+        <createTable tableName="events" remarks="Event table. Contains detailed information and description.">
+            <column name="event_id" type="serial" remarks="Serial numbers of events in the database.">
+                <constraints primaryKey="true" primaryKeyName="event_id"/>
+            </column>
+            <column name="title" type="varchar(100)" remarks="Event title."/>
+            <column name="description" type="text" remarks="Text description of the essence of the event."/>
+            <column name="event_date" type="timestamp" remarks="Date and time of the event."/>
+            <column name="location" type="varchar(100)" remarks="Location of the event."/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="Creating table participants" author="poostotel">
+        <createTable tableName="participants"
+                     remarks="A table for linking events and users allows you to get a complete list of event visitors.">
+            <column name="participant_id" type="serial" remarks="Serial numbers of participants in the database.">
+                <constraints primaryKey="true" primaryKeyName="participant_id"/>
+            </column>
+            <column name="user_id" type="int" remarks="Auxiliary field for many-to-many communication."/>
+            <column name="event_id" type="int" remarks="Auxiliary field for many-to-many communication."/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="participants" baseColumnNames="user_id"
+                                 constraintName="fk_participants_users"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint baseTableName="participants" baseColumnNames="event_id"
+                                 constraintName="fk_participants_events"
+                                 referencedTableName="events" referencedColumnNames="event_id"/>
+    </changeSet>
+
+    <changeSet id="Creating table comments" author="poostotel">
+        <createTable tableName="comments" remarks="Table for saving comments on past events.">
+            <column name="comment_id" type="serial" remarks="Serial numbers of comments in the database.">
+                <constraints primaryKey="true" primaryKeyName="comment_id"/>
+            </column>
+            <column name="event_id" type="int" remarks="Auxiliary field for many-to-one communication."/>
+            <column name="user_id" type="int" remarks="Auxiliary field for many-to-one communication."/>
+            <column name="comment" type="text" remarks="The text component of a comment about a past event."/>
+            <column name="rating" type="int"
+                    remarks="The rating of the past event is indicated in the range of integers from 1 to 10.">
+            </column>
+            <column name="comment_date" type="timestamp" remarks="Date and time the comment was written."/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="comments" baseColumnNames="event_id"
+                                 constraintName="fk_comments_events"
+                                 referencedTableName="events" referencedColumnNames="event_id"/>
+        <addForeignKeyConstraint baseTableName="comments" baseColumnNames="user_id"
+                                 constraintName="fk_comments_users"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+    </changeSet>
+
+</databaseChangeLog>
