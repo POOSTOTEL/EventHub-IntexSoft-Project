@@ -27,11 +27,12 @@ public class UserServiceImpl implements UserService {
   }
 
   public Optional<UserDto> getUserByUserId(Long userId) {
-    return Optional.ofNullable(UserMapper.instance.toUserDto(userRepository.findUserByUserId(userId)));
+    return Optional.ofNullable(
+        UserMapper.instance.toUserDto(userRepository.findUserByUserId(userId)));
   }
 
   public Optional<UserDto> updateUser(UserDto userDto) {
-    return Optional.ofNullable(userRepository.findUserByUserId(userDto.getUserId()))
+    return Optional.ofNullable(userRepository.getUserByUserId(userDto.getUserId()))
         .filter(
             user ->
                 userRepository
@@ -50,10 +51,10 @@ public class UserServiceImpl implements UserService {
 
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public boolean deleteUserByUserId(Long userId) {
-    return Optional.ofNullable(userRepository.findUserById(userId))
+    return Optional.ofNullable(userRepository.getUserByUserId(userId))
         .map(
             user -> {
-              userRepository.deleteUserById(userId);
+              userRepository.deleteUserByUserId(userId);
               return true;
             })
         .orElse(false);
