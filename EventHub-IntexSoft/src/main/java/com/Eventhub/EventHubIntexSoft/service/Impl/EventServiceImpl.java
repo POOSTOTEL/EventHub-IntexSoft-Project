@@ -1,14 +1,14 @@
 package com.Eventhub.EventHubIntexSoft.service.Impl;
 
-import com.Eventhub.EventHubIntexSoft.DTO.EventDto;
+import com.Eventhub.EventHubIntexSoft.dto.EventDto;
 import com.Eventhub.EventHubIntexSoft.entity.Event;
-import com.Eventhub.EventHubIntexSoft.mapper.EventListMapper;
 import com.Eventhub.EventHubIntexSoft.mapper.EventMapper;
 import com.Eventhub.EventHubIntexSoft.repository.EventRepository;
 import com.Eventhub.EventHubIntexSoft.service.EventService;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.mapstruct.Named;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +19,7 @@ public class EventServiceImpl implements EventService {
   private final EventRepository eventRepository;
 
   public List<EventDto> getAllEvents() {
-    return EventListMapper.instance.toDtoList(eventRepository.findAll());
+    return EventMapper.instance.toDtoList(eventRepository.findAll());
   }
 
   public Optional<EventDto> createEvent(Event event) {
@@ -45,7 +45,10 @@ public class EventServiceImpl implements EventService {
               return EventMapper.instance.toEventDto(eventRepository.save(event));
             });
   }
-
+  @Named("findEventByEventId")
+  public Event findEventByEventId (Long eventId) {
+      return eventRepository.findEventByEventId(eventId);
+  }
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public boolean deleteEventByEventId(Long eventId) {
     return Optional.ofNullable(eventRepository.findEventByEventId(eventId))

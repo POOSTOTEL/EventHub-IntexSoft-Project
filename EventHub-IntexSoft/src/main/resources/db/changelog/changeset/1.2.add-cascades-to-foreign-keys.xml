@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="Drop users foreign key for participants" author="poostotel">
+        <sql>
+            ALTER TABLE participants DROP CONSTRAINT fk_participants_users;
+        </sql>
+    </changeSet>
+
+    <changeSet id="Add cascade in users foreign key for participants" author="poostotel">
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="users"
+                                 constraintName="fk_participants_users"
+                                 referencedColumnNames="user_id"
+                                 referencedTableName="users"
+                                 onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="Drop events foreign key for participants" author="poostotel">
+        <sql>
+            ALTER TABLE participants DROP CONSTRAINT fk_participants_events;
+        </sql>
+    </changeSet>
+
+    <changeSet id="Add cascade in events foreign key for participants" author="poostotel">
+        <addForeignKeyConstraint baseColumnNames="event_id"
+                                 baseTableName="events"
+                                 constraintName="fk_participants_events"
+                                 referencedColumnNames="event_id"
+                                 referencedTableName="events"
+                                 onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="Drop users foreign key for comments" author="poostotel">
+        <sql>
+            ALTER TABLE comments DROP CONSTRAINT fk_comments_users;
+        </sql>
+    </changeSet>
+
+    <changeSet id="Add cascade in users foreign key for comments" author="poostotel">
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="users"
+                                 constraintName="fk_comments_users"
+                                 referencedColumnNames="user_id"
+                                 referencedTableName="users"
+                                 onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="Drop events foreign key for comments" author="poostotel">
+        <sql>
+            ALTER TABLE comments DROP CONSTRAINT fk_comments_events;
+        </sql>
+    </changeSet>
+
+    <changeSet id="Add cascade in events foreign key for comments" author="poostotel">
+        <addForeignKeyConstraint baseColumnNames="event_id"
+                                 baseTableName="events"
+                                 constraintName="fk_comments_events"
+                                 referencedColumnNames="event_id"
+                                 referencedTableName="events"
+                                 onDelete="CASCADE"/>
+    </changeSet>
+
+</databaseChangeLog>

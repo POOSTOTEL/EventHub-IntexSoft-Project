@@ -1,6 +1,6 @@
 package com.Eventhub.EventHubIntexSoft.controller;
 
-import com.Eventhub.EventHubIntexSoft.DTO.CommentDto;
+import com.Eventhub.EventHubIntexSoft.dto.CommentDto;
 import com.Eventhub.EventHubIntexSoft.entity.Comment;
 import com.Eventhub.EventHubIntexSoft.service.Impl.CommentServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;

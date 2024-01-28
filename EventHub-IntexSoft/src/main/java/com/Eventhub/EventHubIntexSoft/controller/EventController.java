@@ -1,6 +1,6 @@
 package com.Eventhub.EventHubIntexSoft.controller;
 
-import com.Eventhub.EventHubIntexSoft.DTO.EventDto;
+import com.Eventhub.EventHubIntexSoft.dto.EventDto;
 import com.Eventhub.EventHubIntexSoft.entity.Event;
 import com.Eventhub.EventHubIntexSoft.service.Impl.EventServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;

@@ -5,5 +5,5 @@
 
     <include file="changeset/1.0.create-initial-database.xml" relativeToChangelogFile="true"/>
     <include file="changeset/1.1.insert-initial-data.xml" relativeToChangelogFile="true"/>
-
+    <include file="changeset/1.2.add-cascades-to-foreign-keys.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

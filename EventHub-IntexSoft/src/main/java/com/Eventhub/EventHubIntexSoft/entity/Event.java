@@ -1,14 +1,17 @@
 package com.Eventhub.EventHubIntexSoft.entity;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -47,4 +50,12 @@ public class Event {
   @Column(name = "location")
   @Schema(description = "The location of the Event", example = "Minsk, Belarus")
   private String location;
+
+  @OneToMany(mappedBy = "event", cascade = CascadeType.REMOVE)
+  @Schema(description = "The comments related to the Event", implementation = Comment.class)
+  private List<Comment> comments;
+
+  @OneToMany(mappedBy = "event", cascade = CascadeType.REMOVE)
+  @Schema(description = "The participants of the Event", implementation = Participant.class)
+  private List<Participant> participants;
 }

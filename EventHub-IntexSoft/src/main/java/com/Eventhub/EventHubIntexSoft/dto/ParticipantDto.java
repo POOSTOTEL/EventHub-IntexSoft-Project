@@ -1,4 +1,4 @@
-package com.Eventhub.EventHubIntexSoft.DTO;
+package com.Eventhub.EventHubIntexSoft.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -15,10 +15,10 @@ public class ParticipantDto {
           example = "12")
   private Long participantId;
 
-  @Schema(description = "The UserDto associated with the ParticipantDto")
-  private UserDto userDTO;
+  @Schema(description = "The User id associated with the ParticipantDto", implementation = UserDto.class)
+  private Long userId;
 
-  @Schema(description = "The EventDto associated with the ParticipantDto")
-  private EventDto eventDTO;
+  @Schema(description = "The Event id associated with the ParticipantDto", implementation = EventDto.class)
+  private Long eventId;
 }
 

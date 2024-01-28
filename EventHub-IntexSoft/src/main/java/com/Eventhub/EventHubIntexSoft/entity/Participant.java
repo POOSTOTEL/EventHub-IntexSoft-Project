@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
 
 @Data
 @NoArgsConstructor
@@ -26,12 +27,12 @@ public class Participant {
       example = "12")
   private Long participantId;
 
-  @ManyToOne(cascade = CascadeType.REMOVE)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", nullable = false)
   @Schema(description = "The user associated with the participant", example = "4")
   private User user;
 
-  @ManyToOne(cascade = CascadeType.REMOVE)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "event_id", nullable = false)
   @Schema(description = "The event associated with the participant", example = "4")
   private Event event;

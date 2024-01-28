@@ -1,14 +1,14 @@
 package com.Eventhub.EventHubIntexSoft.service.Impl;
 
-import com.Eventhub.EventHubIntexSoft.DTO.UserDto;
+import com.Eventhub.EventHubIntexSoft.dto.UserDto;
 import com.Eventhub.EventHubIntexSoft.entity.User;
-import com.Eventhub.EventHubIntexSoft.mapper.UserListMapper;
 import com.Eventhub.EventHubIntexSoft.mapper.UserMapper;
 import com.Eventhub.EventHubIntexSoft.repository.UserRepository;
 import com.Eventhub.EventHubIntexSoft.service.UserService;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.mapstruct.Named;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserService {
   private final UserRepository userRepository;
 
   public List<UserDto> getAllUsers() {
-    return UserListMapper.instance.toDtoList(userRepository.findAll());
+    return UserMapper.instance.toDtoList(userRepository.findAll());
   }
 
   public Optional<UserDto> createUser(User user) {
@@ -48,7 +48,10 @@ public class UserServiceImpl implements UserService {
               return UserMapper.instance.toUserDto(userRepository.save(user));
             });
   }
-
+  @Named("findUserByUserId")
+  public User findUserByUserId (Long userId) {
+      return userRepository.findUserByUserId(userId);
+  }
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public boolean deleteUserByUserId(Long userId) {
     return Optional.ofNullable(userRepository.getUserByUserId(userId))

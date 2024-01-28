@@ -1,6 +1,6 @@
 package com.Eventhub.EventHubIntexSoft.service;
 
-import com.Eventhub.EventHubIntexSoft.DTO.EventDto;
+import com.Eventhub.EventHubIntexSoft.dto.EventDto;
 import com.Eventhub.EventHubIntexSoft.entity.Event;
 import java.util.List;
 import java.util.Optional;

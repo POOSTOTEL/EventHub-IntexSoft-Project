@@ -1,6 +1,6 @@
 package com.Eventhub.EventHubIntexSoft.service;
 
-import com.Eventhub.EventHubIntexSoft.DTO.CommentDto;
+import com.Eventhub.EventHubIntexSoft.dto.CommentDto;
 import com.Eventhub.EventHubIntexSoft.entity.Comment;
 import java.util.List;
 import java.util.Optional;

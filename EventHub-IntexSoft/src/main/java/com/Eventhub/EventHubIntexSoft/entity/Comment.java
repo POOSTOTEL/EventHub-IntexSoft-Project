@@ -27,14 +27,14 @@ public class Comment {
       example = "5")
   private Long commentId;
 
-  @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "event_id", nullable = false)
-  @Schema(description = "The event associated with the Comment")
+  @Schema(description = "The event associated with the Comment", implementation = Event.class)
   private Event event;
 
-  @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", nullable = false)
-  @Schema(description = "The user who posted the Comment")
+  @Schema(description = "The user who posted the Comment", implementation = User.class)
   private User user;
 
   @Column(name = "comment")
@@ -42,7 +42,11 @@ public class Comment {
   private String comment;
 
   @Column(name = "rating")
-  @Schema(description = "The rating given by the user", example = "9", minimum = "1", maximum = "10")
+  @Schema(
+      description = "The rating given by the user",
+      example = "9",
+      minimum = "1",
+      maximum = "10")
   private Integer rating;
 
   @Column(name = "comment_date")

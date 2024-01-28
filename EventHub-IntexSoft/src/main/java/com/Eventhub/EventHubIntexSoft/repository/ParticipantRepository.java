@@ -1,6 +1,7 @@
 package com.Eventhub.EventHubIntexSoft.repository;
 
 import com.Eventhub.EventHubIntexSoft.entity.Participant;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,4 +11,6 @@ public interface ParticipantRepository extends JpaRepository<Participant, Long> 
   Participant findParticipantByParticipantId(Long participantId);
 
   void deleteParticipantByParticipantId(Long participantId);
+
+  List<Participant> findAllByParticipantId(Long id);
 }
