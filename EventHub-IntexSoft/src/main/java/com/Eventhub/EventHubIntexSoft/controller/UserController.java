@@ -2,7 +2,7 @@ package com.Eventhub.EventHubIntexSoft.controller;
 
 import com.Eventhub.EventHubIntexSoft.dto.UserDto;
 import com.Eventhub.EventHubIntexSoft.entity.User;
-import com.Eventhub.EventHubIntexSoft.service.Impl.UserServiceImpl;
+import com.Eventhub.EventHubIntexSoft.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/user")
 public class UserController {
-  private final UserServiceImpl userServiceImpl;
+  private final UserService userService;
 
   @GetMapping("/all")
   @Operation(
@@ -42,7 +42,7 @@ public class UserController {
             })
       })
   public ResponseEntity<List<UserDto>> allUsers() {
-    return ResponseEntity.ok(userServiceImpl.getAllUsers());
+    return ResponseEntity.ok(userService.getAllUsers());
   }
 
   @PostMapping
@@ -73,7 +73,7 @@ public class UserController {
             content = @Content)
       })
   public ResponseEntity<UserDto> createUser(@RequestBody User user) {
-    return userServiceImpl
+    return userService
         .createUser(user)
         .map(userDto -> new ResponseEntity<>(userDto, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
@@ -103,8 +103,8 @@ public class UserController {
             }),
         @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
       })
-  public ResponseEntity<UserDto> getUserById(@PathVariable("id") Long id) {
-    return userServiceImpl
+  public ResponseEntity<UserDto> getUserByUserId(@PathVariable("id") Long id) {
+    return userService
         .getUserByUserId(id)
         .map(userDto -> new ResponseEntity<>(userDto, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -135,7 +135,7 @@ public class UserController {
         @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
       })
   public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto) {
-    return userServiceImpl
+    return userService
         .updateUser(userDto)
         .map(userDataTransferObject -> new ResponseEntity<>(userDataTransferObject, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -161,8 +161,8 @@ public class UserController {
             content = {@Content(mediaType = "text/plain", schema = @Schema(type = "string"))}),
         @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
       })
-  public ResponseEntity<String> deleteUser(@PathVariable("id") Long id) {
-    return userServiceImpl.deleteUserByUserId(id)
+  public ResponseEntity<String> deleteUserByUserId(@PathVariable("id") Long id) {
+    return userService.deleteUserByUserId(id)
         ? ResponseEntity.ok("User with id " + id + " deleted.")
         : new ResponseEntity<>(HttpStatus.NOT_FOUND);
   }

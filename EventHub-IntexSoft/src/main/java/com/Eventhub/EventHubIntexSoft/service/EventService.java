@@ -15,4 +15,6 @@ public interface EventService {
   Optional<EventDto> updateEvent(EventDto eventDto);
 
   boolean deleteEventByEventId(Long eventId);
+
+  Event findEventByEventId(Long eventId);
 }

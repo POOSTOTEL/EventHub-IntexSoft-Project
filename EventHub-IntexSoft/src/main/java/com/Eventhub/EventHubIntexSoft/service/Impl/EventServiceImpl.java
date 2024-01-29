@@ -27,7 +27,8 @@ public class EventServiceImpl implements EventService {
   }
 
   public Optional<EventDto> getEventByEventId(Long eventId) {
-    return Optional.ofNullable(EventMapper.instance.toEventDto(eventRepository.findEventByEventId(eventId)));
+    return Optional.ofNullable(
+        EventMapper.instance.toEventDto(eventRepository.findEventByEventId(eventId)));
   }
 
   public Optional<EventDto> updateEvent(EventDto eventDto) {
@@ -45,10 +46,12 @@ public class EventServiceImpl implements EventService {
               return EventMapper.instance.toEventDto(eventRepository.save(event));
             });
   }
+
   @Named("findEventByEventId")
-  public Event findEventByEventId (Long eventId) {
-      return eventRepository.findEventByEventId(eventId);
+  public Event findEventByEventId(Long eventId) {
+    return eventRepository.findEventByEventId(eventId);
   }
+
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public boolean deleteEventByEventId(Long eventId) {
     return Optional.ofNullable(eventRepository.findEventByEventId(eventId))

@@ -15,4 +15,6 @@ public interface ParticipantService {
   Optional<ParticipantDto> updateParticipant(ParticipantDto participantDto);
 
   boolean deleteParticipantByParticipantId(Long participantId);
+
+  List<Participant> participantIdListToParticipantList(List<Long> ids);
 }

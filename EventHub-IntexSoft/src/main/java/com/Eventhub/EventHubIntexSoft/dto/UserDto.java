@@ -25,8 +25,8 @@ public class UserDto {
   private String password;
 
   @Schema(description = "The comments id made by the UserDto")
-  private List<Long> comments;
+  private List<Long> userComments;
 
   @Schema(description = "The events id the User is participating in")
-  private List<Long> participants;
+  private List<Long> userParticipants;
 }

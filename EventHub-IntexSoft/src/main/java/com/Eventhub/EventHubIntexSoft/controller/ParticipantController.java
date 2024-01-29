@@ -2,7 +2,7 @@ package com.Eventhub.EventHubIntexSoft.controller;
 
 import com.Eventhub.EventHubIntexSoft.dto.ParticipantDto;
 import com.Eventhub.EventHubIntexSoft.entity.Participant;
-import com.Eventhub.EventHubIntexSoft.service.Impl.ParticipantServiceImpl;
+import com.Eventhub.EventHubIntexSoft.service.ParticipantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/participant")
 public class ParticipantController {
-  private final ParticipantServiceImpl participantServiceImpl;
+  private final ParticipantService participantService;
 
   @GetMapping("/all")
   @Operation(
@@ -43,7 +43,7 @@ public class ParticipantController {
             })
       })
   public ResponseEntity<List<ParticipantDto>> allParticipants() {
-    return ResponseEntity.ok(participantServiceImpl.getAllParticipants());
+    return ResponseEntity.ok(participantService.getAllParticipants());
   }
 
   @PostMapping
@@ -74,7 +74,7 @@ public class ParticipantController {
             content = @Content)
       })
   public ResponseEntity<ParticipantDto> createParticipant(@RequestBody Participant participant) {
-    return participantServiceImpl
+    return participantService
         .createParticipant(participant)
         .map(participantDto -> new ResponseEntity<>(participantDto, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
@@ -107,8 +107,9 @@ public class ParticipantController {
             description = "Participant not found",
             content = @Content)
       })
-  public ResponseEntity<ParticipantDto> getParticipantById(@PathVariable("id") Long participantId) {
-    return participantServiceImpl
+  public ResponseEntity<ParticipantDto> getParticipantByParticipantId(
+      @PathVariable("id") Long participantId) {
+    return participantService
         .getParticipantByParticipantId(participantId)
         .map(participantDto -> new ResponseEntity<>(participantDto, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -143,7 +144,7 @@ public class ParticipantController {
       })
   public ResponseEntity<ParticipantDto> updateParticipant(
       @RequestBody ParticipantDto participantDto) {
-    return participantServiceImpl
+    return participantService
         .updateParticipant(participantDto)
         .map(participantDataTransferObject -> new ResponseEntity<>(participantDto, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -172,8 +173,9 @@ public class ParticipantController {
             description = "Participant not found",
             content = @Content)
       })
-  public ResponseEntity<String> deleteParticipantById(@PathVariable("id") Long participantId) {
-    return participantServiceImpl.deleteParticipantByParticipantId(participantId)
+  public ResponseEntity<String> deleteParticipantByParticipantId(
+      @PathVariable("id") Long participantId) {
+    return participantService.deleteParticipantByParticipantId(participantId)
         ? ResponseEntity.ok("Participant with id " + participantId + " deleted.")
         : new ResponseEntity<>(HttpStatus.NOT_FOUND);
   }

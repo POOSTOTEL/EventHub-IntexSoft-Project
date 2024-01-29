@@ -23,7 +23,11 @@ public class UserServiceImpl implements UserService {
   }
 
   public Optional<UserDto> createUser(User user) {
-    return Optional.ofNullable(UserMapper.instance.toUserDto(userRepository.save(user)));
+    if (Optional.ofNullable(userRepository.findUserByUserId(user.getUserId())).isPresent()) {
+      return Optional.empty();
+    } else {
+      return Optional.ofNullable(UserMapper.instance.toUserDto(userRepository.save(user)));
+    }
   }
 
   public Optional<UserDto> getUserByUserId(Long userId) {
@@ -32,7 +36,7 @@ public class UserServiceImpl implements UserService {
   }
 
   public Optional<UserDto> updateUser(UserDto userDto) {
-    return Optional.ofNullable(userRepository.getUserByUserId(userDto.getUserId()))
+    return Optional.ofNullable(userRepository.findUserByUserId(userDto.getUserId()))
         .filter(
             user ->
                 userRepository
@@ -48,13 +52,15 @@ public class UserServiceImpl implements UserService {
               return UserMapper.instance.toUserDto(userRepository.save(user));
             });
   }
+
   @Named("findUserByUserId")
-  public User findUserByUserId (Long userId) {
-      return userRepository.findUserByUserId(userId);
+  public User findUserByUserId(Long userId) {
+    return userRepository.findUserByUserId(userId);
   }
+
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public boolean deleteUserByUserId(Long userId) {
-    return Optional.ofNullable(userRepository.getUserByUserId(userId))
+    return Optional.ofNullable(userRepository.findUserByUserId(userId))
         .map(
             user -> {
               userRepository.deleteUserByUserId(userId);

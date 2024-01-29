@@ -17,7 +17,9 @@ public class CommentDto {
       example = "5")
   private Long commentId;
 
-  @Schema(description = "The Event id associated with the CommentDto", implementation = EventDto.class)
+  @Schema(
+      description = "The Event id associated with the CommentDto",
+      implementation = EventDto.class)
   private Long eventId;
 
   @Schema(description = "The User id who posted the CommentDto", implementation = UserDto.class)

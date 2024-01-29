@@ -46,7 +46,7 @@ public class ParticipantServiceImpl implements ParticipantService {
   public List<Participant> participantIdListToParticipantList(List<Long> ids) {
     List<Participant> participants = new ArrayList<>();
     for (Long id : ids) {
-      participants.addAll(participantRepository.findAllByParticipantId(id));
+      participants.add(participantRepository.findParticipantByParticipantId(id));
     }
     return participants;
   }

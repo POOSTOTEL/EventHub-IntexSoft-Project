@@ -32,8 +32,8 @@ public class EventDto {
   private String location;
 
   @Schema(description = "The comments id made by the UserDto")
-  private List<Long> comments;
+  private List<Long> eventComments;
 
   @Schema(description = "The events id the User is participating in")
-  private List<Long> participants;
+  private List<Long> eventParticipants;
 }

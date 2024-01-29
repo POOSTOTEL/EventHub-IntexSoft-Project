@@ -20,17 +20,23 @@ import org.mapstruct.Named;
 public interface UserMapper {
   UserMapper instance = getMapper(UserMapper.class);
 
-  @Mapping(source = "comments", target = "comments", qualifiedByName = "commentIdListToCommentList")
   @Mapping(
-      source = "participants",
-      target = "participants",
+      source = "userComments",
+      target = "userComments",
+      qualifiedByName = "commentIdListToCommentList")
+  @Mapping(
+      source = "userParticipants",
+      target = "userParticipants",
       qualifiedByName = "participantIdListToParticipantList")
   User toUser(UserDto userDTO);
 
-  @Mapping(source = "comments", target = "comments", qualifiedByName = "commentListToCommentIdList")
   @Mapping(
-      source = "participants",
-      target = "participants",
+      source = "userComments",
+      target = "userComments",
+      qualifiedByName = "commentListToCommentIdList")
+  @Mapping(
+      source = "userParticipants",
+      target = "userParticipants",
       qualifiedByName = "participantListToParticipantIdList")
   UserDto toUserDto(User user);
 

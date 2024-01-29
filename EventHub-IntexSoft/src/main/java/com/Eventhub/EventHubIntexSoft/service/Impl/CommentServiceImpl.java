@@ -48,7 +48,7 @@ public class CommentServiceImpl implements CommentService {
   public List<Comment> commentIdListToCommentList(List<Long> ids) {
     List<Comment> comments = new ArrayList<>();
     for (Long id : ids) {
-      comments.addAll(commentRepository.findAllByCommentId(id));
+      comments.add(commentRepository.findCommentByCommentId(id));
     }
     return comments;
   }

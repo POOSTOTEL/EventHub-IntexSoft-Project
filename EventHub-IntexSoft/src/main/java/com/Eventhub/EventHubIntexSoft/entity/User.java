@@ -46,11 +46,11 @@ public class User {
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
   @Schema(description = "The comments made by the User", implementation = Comment.class)
-  private List<Comment> comments;
+  private List<Comment> userComments;
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
   @Schema(
       description = "The events the User is participating in",
       implementation = Participant.class)
-  private List<Participant> participants;
+  private List<Participant> userParticipants;
 }

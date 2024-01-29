@@ -6,30 +6,37 @@ import com.Eventhub.EventHubIntexSoft.dto.EventDto;
 import com.Eventhub.EventHubIntexSoft.entity.Comment;
 import com.Eventhub.EventHubIntexSoft.entity.Event;
 import com.Eventhub.EventHubIntexSoft.entity.Participant;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.Eventhub.EventHubIntexSoft.service.Impl.CommentServiceImpl;
 import com.Eventhub.EventHubIntexSoft.service.Impl.ParticipantServiceImpl;
+import java.util.ArrayList;
+import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
-@Mapper(componentModel = "spring", uses = {CommentServiceImpl.class, ParticipantServiceImpl.class})
+@Mapper(
+    componentModel = "spring",
+    uses = {CommentServiceImpl.class, ParticipantServiceImpl.class})
 public interface EventMapper {
   EventMapper instance = getMapper(EventMapper.class);
 
-  @Mapping(source = "comments", target = "comments", qualifiedByName = "commentListToCommentIdList")
   @Mapping(
-      source = "participants",
-      target = "participants",
+      source = "eventComments",
+      target = "eventComments",
+      qualifiedByName = "commentListToCommentIdList")
+  @Mapping(
+      source = "eventParticipants",
+      target = "eventParticipants",
       qualifiedByName = "participantListToParticipantIdList")
   EventDto toEventDto(Event event);
 
-  @Mapping(source = "comments", target = "comments", qualifiedByName = "commentIdListToCommentList")
   @Mapping(
-      source = "participants",
-      target = "participants",
+      source = "eventComments",
+      target = "eventComments",
+      qualifiedByName = "commentIdListToCommentList")
+  @Mapping(
+      source = "eventParticipants",
+      target = "eventParticipants",
       qualifiedByName = "participantIdListToParticipantList")
   Event toEvent(EventDto eventDto);
 

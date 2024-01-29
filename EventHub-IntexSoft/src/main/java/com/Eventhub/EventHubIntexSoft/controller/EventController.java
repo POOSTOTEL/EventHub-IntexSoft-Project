@@ -2,7 +2,7 @@ package com.Eventhub.EventHubIntexSoft.controller;
 
 import com.Eventhub.EventHubIntexSoft.dto.EventDto;
 import com.Eventhub.EventHubIntexSoft.entity.Event;
-import com.Eventhub.EventHubIntexSoft.service.Impl.EventServiceImpl;
+import com.Eventhub.EventHubIntexSoft.service.EventService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/event")
 public class EventController {
-  private final EventServiceImpl eventServiceImpl;
+  private final EventService eventService;
 
   @GetMapping("/all")
   @Operation(
@@ -41,7 +41,7 @@ public class EventController {
             })
       })
   public ResponseEntity<List<EventDto>> allEvents() {
-    return ResponseEntity.ok(eventServiceImpl.getAllEvents());
+    return ResponseEntity.ok(eventService.getAllEvents());
   }
 
   @PostMapping
@@ -72,7 +72,7 @@ public class EventController {
             content = @Content)
       })
   public ResponseEntity<EventDto> createEvent(@RequestBody Event event) {
-    return eventServiceImpl
+    return eventService
         .createEvent(event)
         .map(eventDto -> new ResponseEntity<>(eventDto, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
@@ -102,8 +102,8 @@ public class EventController {
             }),
         @ApiResponse(responseCode = "404", description = "Event not found", content = @Content)
       })
-  public ResponseEntity<EventDto> getEventById(@PathVariable("id") Long eventId) {
-    return eventServiceImpl
+  public ResponseEntity<EventDto> getEventByEventId(@PathVariable("id") Long eventId) {
+    return eventService
         .getEventByEventId(eventId)
         .map(eventDto -> new ResponseEntity<>(eventDto, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -134,7 +134,7 @@ public class EventController {
         @ApiResponse(responseCode = "404", description = "Event not found", content = @Content)
       })
   public ResponseEntity<EventDto> updateEvent(@RequestBody EventDto eventDto) {
-    return eventServiceImpl
+    return eventService
         .updateEvent(eventDto)
         .map(
             eventDataTransferObject -> new ResponseEntity<>(eventDataTransferObject, HttpStatus.OK))
@@ -161,8 +161,8 @@ public class EventController {
             content = {@Content(mediaType = "text/plain", schema = @Schema(type = "string"))}),
         @ApiResponse(responseCode = "404", description = "Event not found", content = @Content)
       })
-  public ResponseEntity<String> deleteEvent(@PathVariable("id") Long eventId) {
-    return eventServiceImpl.deleteEventByEventId(eventId)
+  public ResponseEntity<String> deleteEventByEventId(@PathVariable("id") Long eventId) {
+    return eventService.deleteEventByEventId(eventId)
         ? ResponseEntity.ok("Event with id " + eventId + " deleted.")
         : new ResponseEntity<>(HttpStatus.NOT_FOUND);
   }

@@ -13,4 +13,8 @@ public interface UserService {
   Optional<UserDto> getUserByUserId(Long userId);
 
   boolean deleteUserByUserId(Long userId);
+
+  User findUserByUserId(Long userId);
+
+  Optional<UserDto> updateUser(UserDto userDto);
 }

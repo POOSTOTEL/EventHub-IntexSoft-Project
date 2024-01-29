@@ -6,10 +6,9 @@ import com.Eventhub.EventHubIntexSoft.dto.ParticipantDto;
 import com.Eventhub.EventHubIntexSoft.entity.Event;
 import com.Eventhub.EventHubIntexSoft.entity.Participant;
 import com.Eventhub.EventHubIntexSoft.entity.User;
-import java.util.List;
-
 import com.Eventhub.EventHubIntexSoft.service.Impl.EventServiceImpl;
 import com.Eventhub.EventHubIntexSoft.service.Impl.UserServiceImpl;
+import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
