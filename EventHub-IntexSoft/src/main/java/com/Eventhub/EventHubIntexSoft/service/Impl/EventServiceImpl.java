@@ -8,7 +8,6 @@ import com.Eventhub.EventHubIntexSoft.service.EventService;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.mapstruct.Named;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,8 +21,10 @@ public class EventServiceImpl implements EventService {
     return EventMapper.instance.toDtoList(eventRepository.findAll());
   }
 
-  public Optional<EventDto> createEvent(Event event) {
-    return Optional.ofNullable(EventMapper.instance.toEventDto(eventRepository.save(event)));
+  public Optional<EventDto> createEvent(EventDto eventDto) {
+    return Optional.ofNullable(
+        EventMapper.instance.toEventDto(
+            eventRepository.save(EventMapper.instance.toEvent(eventDto))));
   }
 
   public Optional<EventDto> getEventByEventId(Long eventId) {
@@ -39,15 +40,15 @@ public class EventServiceImpl implements EventService {
                     || event.getTitle().equals(eventDto.getTitle()))
         .map(
             event -> {
-              Optional.ofNullable(event.getTitle()).ifPresent(event::setTitle);
-              Optional.ofNullable(event.getDescription()).ifPresent(event::setDescription);
-              Optional.ofNullable(event.getEventDate()).ifPresent(event::setEventDate);
-              Optional.ofNullable(event.getLocation()).ifPresent(event::setLocation);
+              Optional.ofNullable(event.getTitle()).ifPresent(eventDto::setTitle);
+              Optional.ofNullable(event.getDescription()).ifPresent(eventDto::setDescription);
+              Optional.ofNullable(event.getEventDate()).ifPresent(eventDto::setEventDate);
+              Optional.ofNullable(event.getLocation()).ifPresent(eventDto::setLocation);
               return EventMapper.instance.toEventDto(eventRepository.save(event));
             });
   }
 
-  @Named("findEventByEventId")
+  //  @Named("findEventByEventId")
   public Event findEventByEventId(Long eventId) {
     return eventRepository.findEventByEventId(eventId);
   }

@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface EventService {
   List<EventDto> getAllEvents();
 
-  Optional<EventDto> createEvent(Event event);
+  Optional<EventDto> createEvent(EventDto eventDto);
 
   Optional<EventDto> getEventByEventId(Long eventId);
 

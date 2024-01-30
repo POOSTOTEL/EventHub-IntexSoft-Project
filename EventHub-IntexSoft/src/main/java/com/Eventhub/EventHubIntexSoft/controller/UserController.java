@@ -1,7 +1,6 @@
 package com.Eventhub.EventHubIntexSoft.controller;
 
 import com.Eventhub.EventHubIntexSoft.dto.UserDto;
-import com.Eventhub.EventHubIntexSoft.entity.User;
 import com.Eventhub.EventHubIntexSoft.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -55,7 +54,7 @@ public class UserController {
         name = "user",
         required = true,
         description = "User to be created",
-        schema = @Schema(implementation = User.class))
+        schema = @Schema(implementation = UserDto.class))
   })
   @ApiResponses(
       value = {
@@ -72,10 +71,10 @@ public class UserController {
             description = "User creation failed due to conflict",
             content = @Content)
       })
-  public ResponseEntity<UserDto> createUser(@RequestBody User user) {
+  public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
     return userService
-        .createUser(user)
-        .map(userDto -> new ResponseEntity<>(userDto, HttpStatus.OK))
+        .createUser(userDto)
+        .map(userDataTransferObject -> new ResponseEntity<>(userDataTransferObject, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
   }
 
@@ -120,7 +119,13 @@ public class UserController {
         name = "userDto",
         required = true,
         description = "UserDto to be updated",
-        schema = @Schema(implementation = UserDto.class))
+        schema =
+            @Schema(
+                example =
+                    "{\"userId\":\"3\", "
+                        + "\"userName\": null, "
+                        + "\"email\":\"john@example.com\", "
+                        + "\"password\": null}"))
   })
   @ApiResponses(
       value = {
@@ -130,7 +135,13 @@ public class UserController {
             content = {
               @Content(
                   mediaType = "application/json",
-                  schema = @Schema(implementation = UserDto.class))
+                  schema =
+                      @Schema(
+                          example =
+                              "{\"userId\":\"3\", "
+                                  + "\"userName\":\"Bobby\", "
+                                  + "\"email\":\"john@example.com\", "
+                                  + "\"password\":\"popit04\"}"))
             }),
         @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
       })

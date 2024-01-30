@@ -1,43 +1,55 @@
 package com.Eventhub.EventHubIntexSoft.mapper;
 
-import static org.mapstruct.factory.Mappers.getMapper;
-
 import com.Eventhub.EventHubIntexSoft.dto.ParticipantDto;
 import com.Eventhub.EventHubIntexSoft.entity.Event;
 import com.Eventhub.EventHubIntexSoft.entity.Participant;
 import com.Eventhub.EventHubIntexSoft.entity.User;
-import com.Eventhub.EventHubIntexSoft.service.Impl.EventServiceImpl;
-import com.Eventhub.EventHubIntexSoft.service.Impl.UserServiceImpl;
+import com.Eventhub.EventHubIntexSoft.service.EventService;
+import com.Eventhub.EventHubIntexSoft.service.UserService;
 import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-@Mapper(
-    componentModel = "spring",
-    uses = {UserServiceImpl.class, EventServiceImpl.class})
-public interface ParticipantMapper {
-  ParticipantMapper instance = getMapper(ParticipantMapper.class);
+@Mapper(componentModel = "spring")
+@Component
+public abstract class ParticipantMapper {
+
+  @Autowired protected UserService userService;
+
+  @Autowired protected EventService eventService;
 
   @Mapping(source = "eventId", target = "event", qualifiedByName = "findEventByEventId")
   @Mapping(source = "userId", target = "user", qualifiedByName = "findUserByUserId")
-  Participant toParticipant(ParticipantDto participantDto);
+  public abstract Participant toParticipant(ParticipantDto participantDto);
 
   @Mapping(source = "event", target = "eventId", qualifiedByName = "eventToEventId")
   @Mapping(source = "user", target = "userId", qualifiedByName = "userToUserId")
-  ParticipantDto toParticipantDto(Participant participant);
+  public abstract ParticipantDto toParticipantDto(Participant participant);
 
-  List<Participant> toParticipantList(List<ParticipantDto> dtoList);
+  public abstract List<Participant> toParticipantList(List<ParticipantDto> dtoList);
 
-  List<ParticipantDto> toDtoList(List<Participant> modelList);
+  public abstract List<ParticipantDto> toDtoList(List<Participant> modelList);
 
   @Named("eventToEventId")
-  default Long eventToEventId(Event event) {
+  protected Long eventToEventId(Event event) {
     return event.getEventId();
   }
 
   @Named("userToUserId")
-  default Long userToUserId(User user) {
+  protected Long userToUserId(User user) {
     return user.getUserId();
+  }
+
+  @Named("findUserByUserId")
+  protected User findUserByUserId(Long userId) {
+    return userService.findUserByUserId(userId);
+  }
+
+  @Named("findEventByEventId")
+  protected Event findEventByEventId(Long eventId) {
+    return eventService.findEventByEventId(eventId);
   }
 }

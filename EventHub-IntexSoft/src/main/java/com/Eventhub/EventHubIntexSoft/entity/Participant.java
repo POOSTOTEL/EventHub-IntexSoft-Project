@@ -2,13 +2,9 @@ package com.Eventhub.EventHubIntexSoft.entity;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "participants")
 @Schema(description = "Details about the Participant")

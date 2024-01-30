@@ -2,12 +2,9 @@ package com.Eventhub.EventHubIntexSoft.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
-
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
 @Schema(description = "Details about the CommentDto")
 public class CommentDto {
 
@@ -17,12 +14,10 @@ public class CommentDto {
       example = "5")
   private Long commentId;
 
-  @Schema(
-      description = "The Event id associated with the CommentDto",
-      implementation = EventDto.class)
+  @Schema(description = "The Event id associated with the CommentDto", example = "3")
   private Long eventId;
 
-  @Schema(description = "The User id who posted the CommentDto", implementation = UserDto.class)
+  @Schema(description = "The User id who posted the CommentDto", example = "2")
   private Long userId;
 
   @Schema(description = "The text of the CommentDto", example = "Great event!")

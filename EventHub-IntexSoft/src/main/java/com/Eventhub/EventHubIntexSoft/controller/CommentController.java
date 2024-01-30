@@ -1,7 +1,6 @@
 package com.Eventhub.EventHubIntexSoft.controller;
 
 import com.Eventhub.EventHubIntexSoft.dto.CommentDto;
-import com.Eventhub.EventHubIntexSoft.entity.Comment;
 import com.Eventhub.EventHubIntexSoft.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -13,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/comment")
 public class CommentController {
-  private final CommentService commentService;
+  @Autowired private final CommentService commentService;
 
   @GetMapping("/all")
   @Operation(
@@ -54,7 +54,7 @@ public class CommentController {
         name = "comment",
         required = true,
         description = "Comment to be created",
-        schema = @Schema(implementation = Comment.class))
+        schema = @Schema(implementation = CommentDto.class))
   })
   @ApiResponses(
       value = {
@@ -71,10 +71,12 @@ public class CommentController {
             description = "Comment creation failed due to conflict",
             content = @Content)
       })
-  public ResponseEntity<CommentDto> createComment(@RequestBody Comment comment) {
+  public ResponseEntity<CommentDto> createComment(@RequestBody CommentDto commentDto) {
     return commentService
-        .createComment(comment)
-        .map(commentDto -> new ResponseEntity<>(commentDto, HttpStatus.OK))
+        .createComment(commentDto)
+        .map(
+            commentDataTransferObject ->
+                new ResponseEntity<>(commentDataTransferObject, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
   }
 
@@ -119,7 +121,15 @@ public class CommentController {
         name = "commentDto",
         required = true,
         description = "CommentDto to be updated",
-        schema = @Schema(implementation = CommentDto.class))
+        schema =
+            @Schema(
+                example =
+                    "{\"commentId\":\"3\", "
+                        + "\"eventId\": null, "
+                        + "\"userId\": null, "
+                        + "\"comment\":\"Awesome meeting!!!\", "
+                        + "\"rating\": null, "
+                        + "\"commentDate\": null}"))
   })
   @ApiResponses(
       value = {
@@ -129,7 +139,15 @@ public class CommentController {
             content = {
               @Content(
                   mediaType = "application/json",
-                  schema = @Schema(implementation = CommentDto.class))
+                  schema =
+                      @Schema(
+                          example =
+                              "{\"commentId\":\"3\", "
+                                  + "\"eventId\":\"2\", "
+                                  + "\"userId\":\"4\", "
+                                  + "\"comment\":\"Awesome meeting!!!\", "
+                                  + "\"rating\":\"10\", "
+                                  + "\"commentDate\":\"2024-01-30T09:20:36\"}"))
             }),
         @ApiResponse(responseCode = "404", description = "Comment not found", content = @Content)
       })

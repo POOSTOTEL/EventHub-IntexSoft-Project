@@ -8,7 +8,6 @@ import com.Eventhub.EventHubIntexSoft.service.UserService;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.mapstruct.Named;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,11 +21,12 @@ public class UserServiceImpl implements UserService {
     return UserMapper.instance.toDtoList(userRepository.findAll());
   }
 
-  public Optional<UserDto> createUser(User user) {
-    if (Optional.ofNullable(userRepository.findUserByUserId(user.getUserId())).isPresent()) {
+  public Optional<UserDto> createUser(UserDto userDto) {
+    if (Optional.ofNullable(userRepository.findUserByUserId(userDto.getUserId())).isPresent()) {
       return Optional.empty();
     } else {
-      return Optional.ofNullable(UserMapper.instance.toUserDto(userRepository.save(user)));
+      return Optional.ofNullable(
+          UserMapper.instance.toUserDto(userRepository.save(UserMapper.instance.toUser(userDto))));
     }
   }
 
@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
             });
   }
 
-  @Named("findUserByUserId")
+  //  @Named("findUserByUserId")
   public User findUserByUserId(Long userId) {
     return userRepository.findUserByUserId(userId);
   }

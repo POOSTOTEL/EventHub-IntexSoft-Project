@@ -1,15 +1,12 @@
 package com.Eventhub.EventHubIntexSoft.service.Impl;
 
 import com.Eventhub.EventHubIntexSoft.dto.CommentDto;
-import com.Eventhub.EventHubIntexSoft.entity.Comment;
 import com.Eventhub.EventHubIntexSoft.mapper.CommentMapper;
 import com.Eventhub.EventHubIntexSoft.repository.CommentRepository;
 import com.Eventhub.EventHubIntexSoft.service.CommentService;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.mapstruct.Named;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,19 +15,20 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
   private final CommentRepository commentRepository;
+  private final CommentMapper commentMapper;
 
   public List<CommentDto> getAllComments() {
-    return CommentMapper.instance.toDtoList(commentRepository.findAll());
+    return commentMapper.toDtoList(commentRepository.findAll());
   }
 
-  public Optional<CommentDto> createComment(Comment comment) {
+  public Optional<CommentDto> createComment(CommentDto commentDto) {
     return Optional.ofNullable(
-        CommentMapper.instance.toCommentDto(commentRepository.save(comment)));
+        commentMapper.toCommentDto(commentRepository.save(commentMapper.toComment(commentDto))));
   }
 
   public Optional<CommentDto> getCommentByCommentId(Long commentId) {
     return Optional.ofNullable(
-        CommentMapper.instance.toCommentDto(commentRepository.findCommentByCommentId(commentId)));
+        commentMapper.toCommentDto(commentRepository.findCommentByCommentId(commentId)));
   }
 
   public Optional<CommentDto> updateComment(CommentDto commentDto) {
@@ -40,17 +38,8 @@ public class CommentServiceImpl implements CommentService {
             comment -> {
               Optional.ofNullable(commentDto.getComment()).ifPresent(comment::setComment);
               Optional.ofNullable(commentDto.getRating()).ifPresent(comment::setRating);
-              return CommentMapper.instance.toCommentDto(commentRepository.save(comment));
+              return commentMapper.toCommentDto(commentRepository.save(comment));
             });
-  }
-
-  @Named("commentIdListToCommentList")
-  public List<Comment> commentIdListToCommentList(List<Long> ids) {
-    List<Comment> comments = new ArrayList<>();
-    for (Long id : ids) {
-      comments.add(commentRepository.findCommentByCommentId(id));
-    }
-    return comments;
   }
 
   @Transactional(isolation = Isolation.READ_COMMITTED)

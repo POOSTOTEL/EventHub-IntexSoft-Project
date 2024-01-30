@@ -1,7 +1,6 @@
 package com.Eventhub.EventHubIntexSoft.controller;
 
 import com.Eventhub.EventHubIntexSoft.dto.EventDto;
-import com.Eventhub.EventHubIntexSoft.entity.Event;
 import com.Eventhub.EventHubIntexSoft.service.EventService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -13,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/event")
 public class EventController {
-  private final EventService eventService;
+  @Autowired private final EventService eventService;
 
   @GetMapping("/all")
   @Operation(
@@ -54,7 +54,7 @@ public class EventController {
         name = "event",
         required = true,
         description = "Event to be created",
-        schema = @Schema(implementation = Event.class))
+        schema = @Schema(implementation = EventDto.class))
   })
   @ApiResponses(
       value = {
@@ -71,10 +71,11 @@ public class EventController {
             description = "Event creation failed due to conflict",
             content = @Content)
       })
-  public ResponseEntity<EventDto> createEvent(@RequestBody Event event) {
+  public ResponseEntity<EventDto> createEvent(@RequestBody EventDto eventDto) {
     return eventService
-        .createEvent(event)
-        .map(eventDto -> new ResponseEntity<>(eventDto, HttpStatus.OK))
+        .createEvent(eventDto)
+        .map(
+            eventDataTransferObject -> new ResponseEntity<>(eventDataTransferObject, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
   }
 
@@ -119,7 +120,14 @@ public class EventController {
         name = "eventDto",
         required = true,
         description = "EventDto to be updated",
-        schema = @Schema(implementation = EventDto.class))
+        schema =
+            @Schema(
+                example =
+                    "{\"eventId\":\"3\", "
+                        + "\"title\":\"Autumn Festival\", "
+                        + "\"description\": null, "
+                        + "\"eventDate\":\"2024-01-30T09:20:36\", "
+                        + "\"location\": null}"))
   })
   @ApiResponses(
       value = {
@@ -129,7 +137,14 @@ public class EventController {
             content = {
               @Content(
                   mediaType = "application/json",
-                  schema = @Schema(implementation = EventDto.class))
+                  schema =
+                      @Schema(
+                          example =
+                              "{\"eventId\":\"3\", "
+                                  + "\"title\":\"Autumn Festival\", "
+                                  + "\"description\":\"Green boring party :(\", "
+                                  + "\"eventDate\":\"2024-01-30T09:20:36\", "
+                                  + "\"location\":\"Paris, France\"}"))
             }),
         @ApiResponse(responseCode = "404", description = "Event not found", content = @Content)
       })

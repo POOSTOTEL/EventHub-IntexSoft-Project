@@ -1,52 +1,23 @@
-package com.Eventhub.EventHubIntexSoft.controller;
+package com.Eventhub.EventHubIntexSoft.integration.controller;
 
-import com.Eventhub.EventHubIntexSoft.EventHubIntexSoftApplication;
 import com.Eventhub.EventHubIntexSoft.dto.UserDto;
-import com.Eventhub.EventHubIntexSoft.entity.User;
+import com.Eventhub.EventHubIntexSoft.integration.database.DatabaseIntegrationTestContainer;
 import com.Eventhub.EventHubIntexSoft.repository.UserRepository;
-import com.github.database.rider.core.api.configuration.DBUnit;
-import com.github.database.rider.core.api.configuration.Orthography;
 import com.github.database.rider.core.api.dataset.DataSet;
-import com.github.database.rider.junit5.api.DBRider;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import java.util.ArrayList;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.HttpStatus;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 
-@Testcontainers
-@DBRider
-@DBUnit(caseInsensitiveStrategy = Orthography.LOWERCASE)
-@SpringBootTest(
-    classes = EventHubIntexSoftApplication.class,
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class UserControllerIntegrationTest {
-  @LocalServerPort private Integer port;
+public class UserControllerIntegrationTest extends DatabaseIntegrationTestContainer {
 
   @Autowired UserRepository userRepository;
 
-  @Container @ServiceConnection
-  private static final PostgreSQLContainer<?> postgres =
-      new PostgreSQLContainer<>(DockerImageName.parse("postgres:16"));
-
-  @BeforeEach
-  void setUp() {
-    RestAssured.baseURI = "http://localhost:" + port;
-  }
-
   @Test
   @DataSet(cleanBefore = true)
-  void testEmptyGetAllUsers() throws Exception {
+  void testEmptyGetAllUsers() {
     RestAssured.given()
         .contentType(ContentType.JSON)
         .when()
@@ -58,7 +29,7 @@ public class UserControllerIntegrationTest {
 
   @Test
   @DataSet(value = "datasets/yml/users.yml", cleanBefore = true, cleanAfter = true)
-  void testGetAll() throws Exception {
+  void testGetAllUsers() {
     RestAssured.given()
         .contentType(ContentType.JSON)
         .when()
@@ -71,17 +42,15 @@ public class UserControllerIntegrationTest {
   @Test
   @DataSet(value = "datasets/yml/users.yml", cleanBefore = true, cleanAfter = true)
   void testCreateNotExistUser() {
+    UserDto userDto = new UserDto();
+    userDto.setUserId(14L);
+    userDto.setUserName("Benedicto");
+    userDto.setEmail("example123@gmail.com");
+    userDto.setPassword("QWERTYqwerty");
     RestAssured.given()
         .contentType(ContentType.JSON)
         .given()
-        .body(
-            new User(
-                14L,
-                "Benedicto",
-                "example123@gmail.com",
-                "QWERTYqwerty",
-                new ArrayList<>(),
-                new ArrayList<>()))
+        .body(userDto)
         .when()
         .post("/user")
         .then()
@@ -92,16 +61,14 @@ public class UserControllerIntegrationTest {
   @Test
   @DataSet(value = "datasets/yml/users.yml", cleanBefore = true, cleanAfter = true)
   void testCreateExistUser() {
+    UserDto userDto = new UserDto();
+    userDto.setUserId(321L);
+    userDto.setUserName("Pablo");
+    userDto.setEmail("pablo123@mail.de");
+    userDto.setPassword("qwerty1234");
     RestAssured.given()
         .contentType(ContentType.JSON)
-        .body(
-            new User(
-                321L,
-                "Pablo",
-                "pablo123@mail.de",
-                "qwerty1234",
-                new ArrayList<>(),
-                new ArrayList<>()))
+        .body(userDto)
         .when()
         .post("/user")
         .then()
@@ -135,9 +102,14 @@ public class UserControllerIntegrationTest {
   @Test
   @DataSet(value = "datasets/yml/users.yml", cleanBefore = true, cleanAfter = true)
   void updateExistUserWithUniqData() {
+    UserDto userDto = new UserDto();
+    userDto.setUserId(321L);
+    userDto.setUserName("Petro");
+    userDto.setEmail(null);
+    userDto.setPassword("12345");
     RestAssured.given()
         .contentType(ContentType.JSON)
-        .body(new UserDto(321L, "Petro", null, "12345", new ArrayList<>(), new ArrayList<>()))
+        .body(userDto)
         .when()
         .put("/user")
         .then()
@@ -150,11 +122,14 @@ public class UserControllerIntegrationTest {
   @Test
   @DataSet(value = "datasets/yml/users.yml", cleanBefore = true, cleanAfter = true)
   void updateExistUserWithNonUniqData() {
+    UserDto userDto = new UserDto();
+    userDto.setUserId(321L);
+    userDto.setUserName(null);
+    userDto.setEmail("ento912@mail.fe");
+    userDto.setPassword("12345");
     RestAssured.given()
         .contentType(ContentType.JSON)
-        .body(
-            new UserDto(
-                321L, null, "ento912@mail.fe", "12345", new ArrayList<>(), new ArrayList<>()))
+        .body(userDto)
         .when()
         .put("/user")
         .then()
@@ -164,11 +139,14 @@ public class UserControllerIntegrationTest {
   @Test
   @DataSet(value = "datasets/yml/users.yml", cleanBefore = true, cleanAfter = true)
   void updateNonExistUser() {
+    UserDto userDto = new UserDto();
+    userDto.setUserId(320L);
+    userDto.setUserName(null);
+    userDto.setEmail("unique@mail.de");
+    userDto.setPassword("12345");
     RestAssured.given()
         .contentType(ContentType.JSON)
-        .body(
-            new UserDto(
-                320L, null, "unique@mail.de", "12345", new ArrayList<>(), new ArrayList<>()))
+        .body(userDto)
         .when()
         .put("/user")
         .then()

@@ -1,7 +1,6 @@
 package com.Eventhub.EventHubIntexSoft.controller;
 
 import com.Eventhub.EventHubIntexSoft.dto.ParticipantDto;
-import com.Eventhub.EventHubIntexSoft.entity.Participant;
 import com.Eventhub.EventHubIntexSoft.service.ParticipantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -56,7 +55,7 @@ public class ParticipantController {
         name = "participant",
         required = true,
         description = "Participant to be created",
-        schema = @Schema(implementation = Participant.class))
+        schema = @Schema(implementation = ParticipantDto.class))
   })
   @ApiResponses(
       value = {
@@ -73,10 +72,13 @@ public class ParticipantController {
             description = "Participant creation failed due to conflict",
             content = @Content)
       })
-  public ResponseEntity<ParticipantDto> createParticipant(@RequestBody Participant participant) {
+  public ResponseEntity<ParticipantDto> createParticipant(
+      @RequestBody ParticipantDto participantDto) {
     return participantService
-        .createParticipant(participant)
-        .map(participantDto -> new ResponseEntity<>(participantDto, HttpStatus.OK))
+        .createParticipant(participantDto)
+        .map(
+            participantDataTransferObject ->
+                new ResponseEntity<>(participantDataTransferObject, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
   }
 
@@ -125,7 +127,10 @@ public class ParticipantController {
         name = "participantDto",
         required = true,
         description = "ParticipantDto to be updated",
-        schema = @Schema(implementation = ParticipantDto.class))
+        schema =
+            @Schema(
+                example =
+                    "{\"participantId\":\"3\", " + "\"userId\":null, " + "\"eventId\":\"2\"}"))
   })
   @ApiResponses(
       value = {
@@ -135,7 +140,12 @@ public class ParticipantController {
             content = {
               @Content(
                   mediaType = "application/json",
-                  schema = @Schema(implementation = ParticipantDto.class))
+                  schema =
+                      @Schema(
+                          example =
+                              "{\"participantId\":\"3\", "
+                                  + "\"userId\":\"4\", "
+                                  + "\"eventId\":\"2\"}"))
             }),
         @ApiResponse(
             responseCode = "404",

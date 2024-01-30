@@ -1,12 +1,9 @@
 package com.Eventhub.EventHubIntexSoft.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.List;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
 @Schema(description = "Details about the UserDto")
 public class UserDto {
   @Schema(
@@ -23,10 +20,4 @@ public class UserDto {
 
   @Schema(description = "The password of the UserDto", example = "12345aA")
   private String password;
-
-  @Schema(description = "The comments id made by the UserDto")
-  private List<Long> userComments;
-
-  @Schema(description = "The events id the User is participating in")
-  private List<Long> userParticipants;
 }
