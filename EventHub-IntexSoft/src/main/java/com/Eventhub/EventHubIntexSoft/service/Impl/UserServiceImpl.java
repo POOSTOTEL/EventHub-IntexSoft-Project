@@ -53,7 +53,6 @@ public class UserServiceImpl implements UserService {
             });
   }
 
-  //  @Named("findUserByUserId")
   public User findUserByUserId(Long userId) {
     return userRepository.findUserByUserId(userId);
   }

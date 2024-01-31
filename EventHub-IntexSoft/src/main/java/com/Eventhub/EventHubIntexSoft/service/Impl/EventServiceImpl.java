@@ -22,9 +22,14 @@ public class EventServiceImpl implements EventService {
   }
 
   public Optional<EventDto> createEvent(EventDto eventDto) {
-    return Optional.ofNullable(
-        EventMapper.instance.toEventDto(
-            eventRepository.save(EventMapper.instance.toEvent(eventDto))));
+    if (Optional.ofNullable(eventRepository.findEventByEventId(eventDto.getEventId()))
+        .isPresent()) {
+      return Optional.empty();
+    } else {
+      return Optional.ofNullable(
+          EventMapper.instance.toEventDto(
+              eventRepository.save(EventMapper.instance.toEvent(eventDto))));
+    }
   }
 
   public Optional<EventDto> getEventByEventId(Long eventId) {
@@ -40,15 +45,14 @@ public class EventServiceImpl implements EventService {
                     || event.getTitle().equals(eventDto.getTitle()))
         .map(
             event -> {
-              Optional.ofNullable(event.getTitle()).ifPresent(eventDto::setTitle);
-              Optional.ofNullable(event.getDescription()).ifPresent(eventDto::setDescription);
-              Optional.ofNullable(event.getEventDate()).ifPresent(eventDto::setEventDate);
-              Optional.ofNullable(event.getLocation()).ifPresent(eventDto::setLocation);
+              Optional.ofNullable(eventDto.getTitle()).ifPresent(event::setTitle);
+              Optional.ofNullable(eventDto.getDescription()).ifPresent(event::setDescription);
+              Optional.ofNullable(eventDto.getEventDate()).ifPresent(event::setEventDate);
+              Optional.ofNullable(eventDto.getLocation()).ifPresent(event::setLocation);
               return EventMapper.instance.toEventDto(eventRepository.save(event));
             });
   }
 
-  //  @Named("findEventByEventId")
   public Event findEventByEventId(Long eventId) {
     return eventRepository.findEventByEventId(eventId);
   }

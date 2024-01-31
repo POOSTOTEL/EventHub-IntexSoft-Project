@@ -1,22 +1,43 @@
 package com.Eventhub.EventHubIntexSoft.integration.controller;
 
+import com.Eventhub.EventHubIntexSoft.EventHubIntexSoftApplication;
 import com.Eventhub.EventHubIntexSoft.dto.UserDto;
-import com.Eventhub.EventHubIntexSoft.integration.database.DatabaseIntegrationTestContainer;
+import com.Eventhub.EventHubIntexSoft.integration.config.TestDatabaseConfiguration;
 import com.Eventhub.EventHubIntexSoft.repository.UserRepository;
+import com.github.database.rider.core.api.configuration.DBUnit;
+import com.github.database.rider.core.api.configuration.Orthography;
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.junit5.api.DBRider;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 
-public class UserControllerIntegrationTest extends DatabaseIntegrationTestContainer {
+@DBRider
+@DBUnit(caseInsensitiveStrategy = Orthography.LOWERCASE)
+@SpringBootTest(
+    classes = EventHubIntexSoftApplication.class,
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Import(TestDatabaseConfiguration.class)
+public class UserControllerIntegrationTest {
+
+  @LocalServerPort protected Integer port;
+
+  @BeforeEach
+  void setUp() {
+    RestAssured.baseURI = "http://localhost:" + port;
+  }
 
   @Autowired UserRepository userRepository;
 
   @Test
-  @DataSet(cleanBefore = true)
+  @DataSet(executeScriptsBefore = "scripts/truncateUsers.sql")
   void testEmptyGetAllUsers() {
     RestAssured.given()
         .contentType(ContentType.JSON)
@@ -28,7 +49,10 @@ public class UserControllerIntegrationTest extends DatabaseIntegrationTestContai
   }
 
   @Test
-  @DataSet(value = "datasets/yml/users.yml", cleanBefore = true, cleanAfter = true)
+  @DataSet(
+      value = "datasets/yml/users.yml",
+      executeScriptsBefore = "scripts/truncateUsers.sql",
+      executeScriptsAfter = "scripts/truncateUsers.sql")
   void testGetAllUsers() {
     RestAssured.given()
         .contentType(ContentType.JSON)
@@ -40,7 +64,10 @@ public class UserControllerIntegrationTest extends DatabaseIntegrationTestContai
   }
 
   @Test
-  @DataSet(value = "datasets/yml/users.yml", cleanBefore = true, cleanAfter = true)
+  @DataSet(
+      value = "datasets/yml/users.yml",
+      executeScriptsBefore = "scripts/truncateUsers.sql",
+      executeScriptsAfter = "scripts/truncateUsers.sql")
   void testCreateNotExistUser() {
     UserDto userDto = new UserDto();
     userDto.setUserId(14L);
@@ -59,7 +86,10 @@ public class UserControllerIntegrationTest extends DatabaseIntegrationTestContai
   }
 
   @Test
-  @DataSet(value = "datasets/yml/users.yml", cleanBefore = true, cleanAfter = true)
+  @DataSet(
+      value = "datasets/yml/users.yml",
+      executeScriptsBefore = "scripts/truncateUsers.sql",
+      executeScriptsAfter = "scripts/truncateUsers.sql")
   void testCreateExistUser() {
     UserDto userDto = new UserDto();
     userDto.setUserId(321L);
@@ -76,7 +106,10 @@ public class UserControllerIntegrationTest extends DatabaseIntegrationTestContai
   }
 
   @Test
-  @DataSet(value = "datasets/yml/users.yml", cleanBefore = true, cleanAfter = true)
+  @DataSet(
+      value = "datasets/yml/users.yml",
+      executeScriptsBefore = "scripts/truncateUsers.sql",
+      executeScriptsAfter = "scripts/truncateUsers.sql")
   void getExistUserById() {
     RestAssured.given()
         .contentType(ContentType.JSON)
@@ -89,7 +122,10 @@ public class UserControllerIntegrationTest extends DatabaseIntegrationTestContai
   }
 
   @Test
-  @DataSet(value = "datasets/yml/users.yml", cleanBefore = true, cleanAfter = true)
+  @DataSet(
+      value = "datasets/yml/users.yml",
+      executeScriptsBefore = "scripts/truncateUsers.sql",
+      executeScriptsAfter = "scripts/truncateUsers.sql")
   void getNotExistUserById() {
     RestAssured.given()
         .contentType(ContentType.JSON)
@@ -100,7 +136,10 @@ public class UserControllerIntegrationTest extends DatabaseIntegrationTestContai
   }
 
   @Test
-  @DataSet(value = "datasets/yml/users.yml", cleanBefore = true, cleanAfter = true)
+  @DataSet(
+      value = "datasets/yml/users.yml",
+      executeScriptsBefore = "scripts/truncateUsers.sql",
+      executeScriptsAfter = "scripts/truncateUsers.sql")
   void updateExistUserWithUniqData() {
     UserDto userDto = new UserDto();
     userDto.setUserId(321L);
@@ -120,7 +159,10 @@ public class UserControllerIntegrationTest extends DatabaseIntegrationTestContai
   }
 
   @Test
-  @DataSet(value = "datasets/yml/users.yml", cleanBefore = true, cleanAfter = true)
+  @DataSet(
+      value = "datasets/yml/users.yml",
+      executeScriptsBefore = "scripts/truncateUsers.sql",
+      executeScriptsAfter = "scripts/truncateUsers.sql")
   void updateExistUserWithNonUniqData() {
     UserDto userDto = new UserDto();
     userDto.setUserId(321L);
@@ -137,7 +179,10 @@ public class UserControllerIntegrationTest extends DatabaseIntegrationTestContai
   }
 
   @Test
-  @DataSet(value = "datasets/yml/users.yml", cleanBefore = true, cleanAfter = true)
+  @DataSet(
+      value = "datasets/yml/users.yml",
+      executeScriptsBefore = "scripts/truncateUsers.sql",
+      executeScriptsAfter = "scripts/truncateUsers.sql")
   void updateNonExistUser() {
     UserDto userDto = new UserDto();
     userDto.setUserId(320L);
@@ -154,7 +199,10 @@ public class UserControllerIntegrationTest extends DatabaseIntegrationTestContai
   }
 
   @Test
-  @DataSet(value = "datasets/yml/users.yml", cleanBefore = true, cleanAfter = true)
+  @DataSet(
+      value = "datasets/yml/users.yml",
+      executeScriptsBefore = "scripts/truncateUsers.sql",
+      executeScriptsAfter = "scripts/truncateUsers.sql")
   void deleteExistUser() {
     RestAssured.given()
         .contentType(ContentType.JSON)
@@ -165,7 +213,10 @@ public class UserControllerIntegrationTest extends DatabaseIntegrationTestContai
   }
 
   @Test
-  @DataSet(value = "datasets/yml/users.yml", cleanBefore = true, cleanAfter = true)
+  @DataSet(
+      value = "datasets/yml/users.yml",
+      executeScriptsBefore = "scripts/truncateUsers.sql",
+      executeScriptsAfter = "scripts/truncateUsers.sql")
   void deleteNonExistUser() {
     RestAssured.given()
         .contentType(ContentType.JSON)
