@@ -22,9 +22,15 @@ public class ParticipantServiceImpl implements ParticipantService {
   }
 
   public Optional<ParticipantDto> createParticipant(ParticipantDto participantDto) {
-    return Optional.ofNullable(
-        participantMapper.toParticipantDto(
-            participantRepository.save(participantMapper.toParticipant(participantDto))));
+    if (Optional.ofNullable(
+            participantRepository.findParticipantByParticipantId(participantDto.getParticipantId()))
+        .isPresent()) {
+      return Optional.empty();
+    } else {
+      return Optional.ofNullable(
+          participantMapper.toParticipantDto(
+              participantRepository.save(participantMapper.toParticipant(participantDto))));
+    }
   }
 
   public Optional<ParticipantDto> getParticipantByParticipantId(Long participantId) {

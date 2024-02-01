@@ -1,0 +1,38 @@
+comments:
+  - comment_id: 238
+    event_id: 505
+    user_id: 321
+    comment: "Very interesting game event!"
+    rating: 10
+    comment_date: "2024-01-31 10:24:48.583000"
+  - comment_id: 106
+    event_id: 505
+    user_id: 104
+    comment: "WoT is my favorite game!!!"
+    rating: 10
+    comment_date: "2023-02-31 18:19:21.697012"
+
+users:
+  - user_id: 321
+    user_name: "Pablo"
+    user_email: "pablo123@mail.de"
+    password: "qwerty1234"
+  - user_id: 104
+    user_name: "Entony"
+    user_email: "ento912@mail.fe"
+    password: "alobama2003"
+
+events:
+  - event_id: 505
+    title: "Wargaming Fest"
+    description: "A lot of steel!!!"
+    event_date: "2024-01-30 10:20:48.583000"
+    location: "Milan, Italy"
+  - event_id: 407
+    title: "ALEO main net opening"
+    description: "Very interesting crypto event."
+    event_date: "2021-09-15 15:14:00.000000"
+    location: "Colorado, USA"
+
+
+

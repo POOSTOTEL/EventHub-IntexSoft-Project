@@ -39,7 +39,7 @@ public class EventControllerIntegrationTest {
 
   @Test
   @DataSet(executeScriptsBefore = "scripts/truncateEvents.sql")
-  void testEmptyGetAllUsers() {
+  void testEmptyGetAllEvents() {
     RestAssured.given()
         .contentType(ContentType.JSON)
         .when()

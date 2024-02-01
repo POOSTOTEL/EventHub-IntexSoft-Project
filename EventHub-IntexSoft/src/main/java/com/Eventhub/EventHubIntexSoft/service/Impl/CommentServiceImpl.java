@@ -22,8 +22,13 @@ public class CommentServiceImpl implements CommentService {
   }
 
   public Optional<CommentDto> createComment(CommentDto commentDto) {
-    return Optional.ofNullable(
-        commentMapper.toCommentDto(commentRepository.save(commentMapper.toComment(commentDto))));
+    if (Optional.ofNullable(commentRepository.findCommentByCommentId(commentDto.getCommentId()))
+        .isPresent()) {
+      return Optional.empty();
+    } else {
+      return Optional.ofNullable(
+          commentMapper.toCommentDto(commentRepository.save(commentMapper.toComment(commentDto))));
+    }
   }
 
   public Optional<CommentDto> getCommentByCommentId(Long commentId) {

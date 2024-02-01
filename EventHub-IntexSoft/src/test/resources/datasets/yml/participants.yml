@@ -1,0 +1,32 @@
+participants:
+  - participant_id: 728
+    event_id: 505
+    user_id: 321
+  - participant_id: 97
+    event_id: 505
+    user_id: 104
+
+users:
+  - user_id: 321
+    user_name: "Pablo"
+    user_email: "pablo123@mail.de"
+    password: "qwerty1234"
+  - user_id: 104
+    user_name: "Entony"
+    user_email: "ento912@mail.fe"
+    password: "alobama2003"
+
+events:
+  - event_id: 505
+    title: "Wargaming Fest"
+    description: "A lot of steel!!!"
+    event_date: "2024-01-30 10:20:48.583000"
+    location: "Milan, Italy"
+  - event_id: 407
+    title: "ALEO main net opening"
+    description: "Very interesting crypto event."
+    event_date: "2021-09-15 15:14:00.000000"
+    location: "Colorado, USA"
+
+
+
