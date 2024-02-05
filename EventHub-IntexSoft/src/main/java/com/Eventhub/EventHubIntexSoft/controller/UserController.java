@@ -4,9 +4,10 @@ import com.Eventhub.EventHubIntexSoft.dto.UserDto;
 import com.Eventhub.EventHubIntexSoft.exception.EmailFormatException;
 import com.Eventhub.EventHubIntexSoft.exception.EmptyDtoFieldException;
 import com.Eventhub.EventHubIntexSoft.exception.NonUniqValueException;
+import com.Eventhub.EventHubIntexSoft.exception.NotFoundException;
 import com.Eventhub.EventHubIntexSoft.exception.PasswordFormatException;
 import com.Eventhub.EventHubIntexSoft.service.UserService;
-import com.Eventhub.EventHubIntexSoft.validator.UserValidator;
+import com.Eventhub.EventHubIntexSoft.validator.user.UserValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -16,7 +17,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -83,13 +83,11 @@ public class UserController {
           PasswordFormatException,
           EmptyDtoFieldException,
           NonUniqValueException {
-    userValidator.validateUserDtoSaveUpdate(userDto);
-    return Optional.ofNullable(userService.createUser(userDto))
-        .map(userDataTransferObject -> new ResponseEntity<>(userDataTransferObject, HttpStatus.OK))
-        .orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
+    userValidator.validateUserDtoSave(userDto);
+    return new ResponseEntity<>(userService.createUser(userDto), HttpStatus.OK);
   }
 
-  @GetMapping("/{id}")
+  @GetMapping("/{userId}")
   @Operation(
       summary = "Get a user by ID",
       description =
@@ -113,11 +111,10 @@ public class UserController {
             }),
         @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
       })
-  public ResponseEntity<UserDto> getUserByUserId(@PathVariable("id") Long id) {
-    return Optional.ofNullable(userService
-        .getUserByUserId(id))
-        .map(userDto -> new ResponseEntity<>(userDto, HttpStatus.OK))
-        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+  public ResponseEntity<UserDto> getUserByUserId(@PathVariable("userId") Long userId)
+      throws NotFoundException {
+    userValidator.validateUserExistingById(userId);
+    return new ResponseEntity<>(userService.getUserByUserId(userId), HttpStatus.OK);
   }
 
   @PutMapping
@@ -156,22 +153,30 @@ public class UserController {
             }),
         @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
       })
-  public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto) {
-    return Optional.ofNullable(userService
-        .updateUser(userDto))
-        .map(userDataTransferObject -> new ResponseEntity<UserDto>(userDataTransferObject, HttpStatus.OK))
-        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+  public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto)
+      throws EmailFormatException,
+          PasswordFormatException,
+          EmptyDtoFieldException,
+          NonUniqValueException,
+          NotFoundException {
+    userValidator.validateUserDtoUpdate(userDto);
+    userService.updateUser(userDto);
+    return new ResponseEntity<>(userDto, HttpStatus.OK);
   }
 
   @PatchMapping
-  public ResponseEntity<UserDto> patchUser(@RequestBody UserDto userDto) {
-    return Optional.ofNullable(userService
-        .patchUser(userDto))
-        .map(userDataTransferObject -> new ResponseEntity<>(userDataTransferObject, HttpStatus.OK))
-        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+  public ResponseEntity<UserDto> patchUser(@RequestBody UserDto userDto)
+      throws EmailFormatException,
+          PasswordFormatException,
+          NonUniqValueException,
+          NotFoundException,
+          EmptyDtoFieldException {
+    userValidator.validateUserDtoPatch(userDto);
+    userService.patchUser(userDto);
+    return new ResponseEntity<>(userService.getUserByUserId(userDto.getUserId()), HttpStatus.OK);
   }
 
-  @DeleteMapping("/{id}")
+  @DeleteMapping("/{userId}")
   @Operation(
       summary = "Delete a user by ID",
       description =
@@ -191,9 +196,10 @@ public class UserController {
             content = {@Content(mediaType = "text/plain", schema = @Schema(type = "string"))}),
         @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
       })
-  public ResponseEntity<String> deleteUserByUserId(@PathVariable("id") Long id) {
-    return userService.deleteUserByUserId(id)
-        ? ResponseEntity.ok("User with id " + id + " deleted.")
-        : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+  public ResponseEntity<String> deleteUserByUserId(@PathVariable("userId") Long userId)
+      throws NotFoundException {
+    userValidator.validateUserExistingById(userId);
+    userService.deleteUserByUserId(userId);
+    return new ResponseEntity<>("User with id " + userId + " deleted.", HttpStatus.OK);
   }
 }

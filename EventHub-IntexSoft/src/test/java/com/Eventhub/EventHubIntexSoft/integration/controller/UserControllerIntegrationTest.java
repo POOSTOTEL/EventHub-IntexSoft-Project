@@ -73,7 +73,7 @@ public class UserControllerIntegrationTest {
     userDto.setUserId(14L);
     userDto.setUserName("Benedicto");
     userDto.setEmail("example123@gmail.com");
-    userDto.setPassword("QWERTYqwerty");
+    userDto.setPassword("QWERTY%qwerty12");
     RestAssured.given()
         .contentType(ContentType.JSON)
         .given()
@@ -82,6 +82,9 @@ public class UserControllerIntegrationTest {
         .post("/user")
         .then()
         .statusCode(HttpStatus.OK.value())
+        .body("userId", Matchers.anything())
+        .body("userName", Matchers.equalTo("Benedicto"))
+        .body("password", Matchers.equalTo("QWERTY%qwerty12"))
         .body("email", Matchers.equalTo("example123@gmail.com"));
   }
 
@@ -92,17 +95,17 @@ public class UserControllerIntegrationTest {
       executeScriptsAfter = "scripts/truncateUsers.sql")
   void testCreateExistUser() {
     UserDto userDto = new UserDto();
-    userDto.setUserId(321L);
+    userDto.setUserId(null);
     userDto.setUserName("Pablo");
     userDto.setEmail("pablo123@mail.de");
-    userDto.setPassword("qwerty1234");
+    userDto.setPassword("qWErty%1234");
     RestAssured.given()
         .contentType(ContentType.JSON)
         .body(userDto)
         .when()
         .post("/user")
         .then()
-        .statusCode(HttpStatus.CONFLICT.value());
+        .statusCode(HttpStatus.NOT_ACCEPTABLE.value());
   }
 
   @Test
@@ -144,8 +147,8 @@ public class UserControllerIntegrationTest {
     UserDto userDto = new UserDto();
     userDto.setUserId(321L);
     userDto.setUserName("Petro");
-    userDto.setEmail(null);
-    userDto.setPassword("12345");
+    userDto.setEmail("petro1989@mail.de");
+    userDto.setPassword("qWEloy%8235");
     RestAssured.given()
         .contentType(ContentType.JSON)
         .body(userDto)
@@ -155,7 +158,8 @@ public class UserControllerIntegrationTest {
         .statusCode(HttpStatus.OK.value())
         .body("userId", Matchers.equalTo(321))
         .body("userName", Matchers.equalTo("Petro"))
-        .body("password", Matchers.equalTo("12345"));
+        .body("email", Matchers.equalTo("petro1989@mail.de"))
+        .body("password", Matchers.equalTo("qWEloy%8235"));
   }
 
   @Test
@@ -166,16 +170,16 @@ public class UserControllerIntegrationTest {
   void updateExistUserWithNonUniqData() {
     UserDto userDto = new UserDto();
     userDto.setUserId(321L);
-    userDto.setUserName(null);
+    userDto.setUserName("Pablo");
     userDto.setEmail("ento912@mail.fe");
-    userDto.setPassword("12345");
+    userDto.setPassword("qWEloy%8235");
     RestAssured.given()
         .contentType(ContentType.JSON)
         .body(userDto)
         .when()
         .put("/user")
         .then()
-        .statusCode(HttpStatus.NOT_FOUND.value());
+        .statusCode(HttpStatus.NOT_ACCEPTABLE.value());
   }
 
   @Test
@@ -186,14 +190,73 @@ public class UserControllerIntegrationTest {
   void updateNonExistUser() {
     UserDto userDto = new UserDto();
     userDto.setUserId(320L);
-    userDto.setUserName(null);
-    userDto.setEmail("unique@mail.de");
-    userDto.setPassword("12345");
+    userDto.setUserName("Mazeratti");
+    userDto.setEmail("petro1989@mail.de");
+    userDto.setPassword("qWEloy%8235");
     RestAssured.given()
         .contentType(ContentType.JSON)
         .body(userDto)
         .when()
         .put("/user")
+        .then()
+        .statusCode(HttpStatus.NOT_FOUND.value());
+  }
+
+  void patchExistUserWithUniqData() {
+    UserDto userDto = new UserDto();
+    userDto.setUserId(321L);
+    userDto.setUserName("Petro");
+    userDto.setEmail(null);
+    userDto.setPassword("qWEloy%8235");
+    RestAssured.given()
+        .contentType(ContentType.JSON)
+        .body(userDto)
+        .when()
+        .patch("/user")
+        .then()
+        .statusCode(HttpStatus.OK.value())
+        .body("userId", Matchers.equalTo(321))
+        .body("userName", Matchers.equalTo("Petro"))
+        .body("email", Matchers.equalTo("pablo123@mail.de"))
+        .body("password", Matchers.equalTo("qWEloy%8235"));
+  }
+
+  @Test
+  @DataSet(
+      value = "datasets/yml/users.yml",
+      executeScriptsBefore = "scripts/truncateUsers.sql",
+      executeScriptsAfter = "scripts/truncateUsers.sql")
+  void patchExistUserWithNonUniqData() {
+    UserDto userDto = new UserDto();
+    userDto.setUserId(321L);
+    userDto.setUserName("Pablo");
+    userDto.setEmail("ento912@mail.fe");
+    userDto.setPassword(null);
+    RestAssured.given()
+        .contentType(ContentType.JSON)
+        .body(userDto)
+        .when()
+        .patch("/user")
+        .then()
+        .statusCode(HttpStatus.NOT_ACCEPTABLE.value());
+  }
+
+  @Test
+  @DataSet(
+      value = "datasets/yml/users.yml",
+      executeScriptsBefore = "scripts/truncateUsers.sql",
+      executeScriptsAfter = "scripts/truncateUsers.sql")
+  void patchNonExistUser() {
+    UserDto userDto = new UserDto();
+    userDto.setUserId(320L);
+    userDto.setUserName("Mazeratti");
+    userDto.setEmail(null);
+    userDto.setPassword(null);
+    RestAssured.given()
+        .contentType(ContentType.JSON)
+        .body(userDto)
+        .when()
+        .patch("/user")
         .then()
         .statusCode(HttpStatus.NOT_FOUND.value());
   }

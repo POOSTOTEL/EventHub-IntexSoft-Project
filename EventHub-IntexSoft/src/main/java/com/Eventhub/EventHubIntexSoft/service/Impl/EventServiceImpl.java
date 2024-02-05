@@ -1,13 +1,18 @@
 package com.Eventhub.EventHubIntexSoft.service.Impl;
 
 import com.Eventhub.EventHubIntexSoft.dto.EventDto;
+import com.Eventhub.EventHubIntexSoft.dto.UserDto;
 import com.Eventhub.EventHubIntexSoft.entity.Event;
 import com.Eventhub.EventHubIntexSoft.mapper.EventMapper;
 import com.Eventhub.EventHubIntexSoft.repository.EventRepository;
 import com.Eventhub.EventHubIntexSoft.service.EventService;
+import java.beans.FeatureDescriptor;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,36 +26,24 @@ public class EventServiceImpl implements EventService {
     return EventMapper.instance.toDtoList(eventRepository.findAll());
   }
 
-  public Optional<EventDto> createEvent(EventDto eventDto) {
-    if (Optional.ofNullable(eventRepository.findEventByEventId(eventDto.getEventId()))
-        .isPresent()) {
-      return Optional.empty();
-    } else {
-      return Optional.ofNullable(
-          EventMapper.instance.toEventDto(
-              eventRepository.save(EventMapper.instance.toEvent(eventDto))));
-    }
+  public EventDto createEvent(EventDto eventDto) {
+    return EventMapper.instance.toEventDto(
+        eventRepository.save(EventMapper.instance.toEvent(eventDto)));
   }
 
-  public Optional<EventDto> getEventByEventId(Long eventId) {
-    return Optional.ofNullable(
-        EventMapper.instance.toEventDto(eventRepository.findEventByEventId(eventId)));
+  public EventDto getEventByEventId(Long eventId) {
+    return EventMapper.instance.toEventDto(eventRepository.findEventByEventId(eventId));
   }
 
-  public Optional<EventDto> updateEvent(EventDto eventDto) {
-    return Optional.ofNullable(eventRepository.findEventByEventId(eventDto.getEventId()))
-        .filter(
-            event ->
-                eventRepository.findAllByTitle(eventDto.getTitle()).isEmpty()
-                    || event.getTitle().equals(eventDto.getTitle()))
-        .map(
-            event -> {
-              Optional.ofNullable(eventDto.getTitle()).ifPresent(event::setTitle);
-              Optional.ofNullable(eventDto.getDescription()).ifPresent(event::setDescription);
-              Optional.ofNullable(eventDto.getEventDate()).ifPresent(event::setEventDate);
-              Optional.ofNullable(eventDto.getLocation()).ifPresent(event::setLocation);
-              return EventMapper.instance.toEventDto(eventRepository.save(event));
-            });
+  public EventDto updateEvent(EventDto eventDto) {
+    return EventMapper.instance.toEventDto(
+        eventRepository.save(EventMapper.instance.toEvent(eventDto)));
+  }
+
+  public EventDto patchEvent(EventDto eventDto) {
+    Event event = eventRepository.findEventByEventId(eventDto.getEventId());
+    BeanUtils.copyProperties(eventDto, event, getNullProperties(eventDto));
+    return EventMapper.instance.toEventDto(eventRepository.save(event));
   }
 
   public Event findEventByEventId(Long eventId) {
@@ -58,13 +51,15 @@ public class EventServiceImpl implements EventService {
   }
 
   @Transactional(isolation = Isolation.READ_COMMITTED)
-  public boolean deleteEventByEventId(Long eventId) {
-    return Optional.ofNullable(eventRepository.findEventByEventId(eventId))
-        .map(
-            event -> {
-              eventRepository.deleteEventByEventId(eventId);
-              return true;
-            })
-        .orElse(false);
+  public void deleteEventByEventId(Long eventId) {
+    eventRepository.deleteEventByEventId(eventId);
+  }
+
+  private String[] getNullProperties(EventDto eventDto) {
+    final BeanWrapper wrapper = new BeanWrapperImpl(eventDto);
+    return Stream.of(wrapper.getPropertyDescriptors())
+        .map(FeatureDescriptor::getName)
+        .filter(name -> wrapper.getPropertyValue(name) == null)
+        .toArray(String[]::new);
   }
 }

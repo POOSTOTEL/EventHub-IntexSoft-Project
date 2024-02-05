@@ -3,6 +3,7 @@ package com.Eventhub.EventHubIntexSoft.handler;
 import com.Eventhub.EventHubIntexSoft.exception.EmailFormatException;
 import com.Eventhub.EventHubIntexSoft.exception.EmptyDtoFieldException;
 import com.Eventhub.EventHubIntexSoft.exception.NonUniqValueException;
+import com.Eventhub.EventHubIntexSoft.exception.NotFoundException;
 import com.Eventhub.EventHubIntexSoft.exception.PasswordFormatException;
 import org.springdoc.api.ErrorMessage;
 import org.springframework.http.HttpStatus;
@@ -34,5 +35,10 @@ public class UserExceptionHandler {
   public ResponseEntity<ErrorMessage> nonUniqValueException(NonUniqValueException exception) {
     return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
         .body(new ErrorMessage(exception.getMessage()));
+  }
+  @ExceptionHandler(NotFoundException.class)
+  public ResponseEntity<ErrorMessage> notFoundException(NotFoundException exception) {
+    return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body(new ErrorMessage(exception.getMessage()));
   }
 }

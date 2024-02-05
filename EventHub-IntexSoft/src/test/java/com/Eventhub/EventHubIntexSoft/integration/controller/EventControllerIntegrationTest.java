@@ -71,7 +71,7 @@ public class EventControllerIntegrationTest {
       executeScriptsAfter = "scripts/truncateEvents.sql")
   void testCreateNotExistEvent() {
     EventDto eventDto = new EventDto();
-    eventDto.setEventId(14L);
+    eventDto.setEventId(null);
     eventDto.setTitle("PokeCon");
     eventDto.setDescription("Big event with little pets from Pokemon universe.");
     eventDto.setEventDate(LocalDateTime.parse("2024-01-30T10:20:48"));
@@ -94,7 +94,7 @@ public class EventControllerIntegrationTest {
       executeScriptsAfter = "scripts/truncateEvents.sql")
   void testCreateExistEvent() {
     EventDto eventDto = new EventDto();
-    eventDto.setEventId(505L);
+    eventDto.setEventId(null);
     eventDto.setTitle("Wargaming Fest");
     eventDto.setDescription("A lot of steel!!!");
     eventDto.setEventDate(LocalDateTime.parse("2024-01-30T10:20:48"));
@@ -105,7 +105,7 @@ public class EventControllerIntegrationTest {
         .when()
         .post("/event")
         .then()
-        .statusCode(HttpStatus.CONFLICT.value());
+        .statusCode(HttpStatus.NOT_ACCEPTABLE.value());
   }
 
   @Test
@@ -146,9 +146,9 @@ public class EventControllerIntegrationTest {
   void updateExistEventWithUniqData() {
     EventDto eventDto = new EventDto();
     eventDto.setEventId(505L);
-    eventDto.setTitle(null);
+    eventDto.setTitle("Wargaming Fest");
     eventDto.setDescription("Kipr summer festival.");
-    eventDto.setEventDate(null);
+    eventDto.setEventDate(LocalDateTime.parse("2024-01-30T10:20:48"));
     eventDto.setLocation("Warshava, Poland");
     RestAssured.given()
         .contentType(ContentType.JSON)
@@ -173,7 +173,7 @@ public class EventControllerIntegrationTest {
     eventDto.setEventId(407L);
     eventDto.setTitle("Wargaming Fest");
     eventDto.setDescription("Big event with little pets from Pokemon universe.");
-    eventDto.setEventDate(null);
+    eventDto.setEventDate(LocalDateTime.parse("2024-01-30T10:20:48"));
     eventDto.setLocation("Brest, Belarus");
     RestAssured.given()
         .contentType(ContentType.JSON)
@@ -181,7 +181,7 @@ public class EventControllerIntegrationTest {
         .when()
         .put("/event")
         .then()
-        .statusCode(HttpStatus.NOT_FOUND.value());
+        .statusCode(HttpStatus.NOT_ACCEPTABLE.value());
   }
 
   @Test
@@ -192,9 +192,9 @@ public class EventControllerIntegrationTest {
   void updateNonExistEvent() {
     EventDto eventDto = new EventDto();
     eventDto.setEventId(402L);
-    eventDto.setTitle(null);
+    eventDto.setTitle("Wargaming Fest");
     eventDto.setDescription("A lot of steel!!!");
-    eventDto.setEventDate(null);
+    eventDto.setEventDate(LocalDateTime.parse("2024-01-30T10:20:48"));
     eventDto.setLocation("Milan, Italy");
     RestAssured.given()
         .contentType(ContentType.JSON)
@@ -204,7 +204,72 @@ public class EventControllerIntegrationTest {
         .then()
         .statusCode(HttpStatus.NOT_FOUND.value());
   }
+  @Test
+  @DataSet(
+          value = "datasets/yml/events.yml",
+          executeScriptsBefore = "scripts/truncateEvents.sql",
+          executeScriptsAfter = "scripts/truncateEvents.sql")
+  void patchExistEventWithUniqData() {
+    EventDto eventDto = new EventDto();
+    eventDto.setEventId(505L);
+    eventDto.setTitle(null);
+    eventDto.setDescription("Kipr summer festival.");
+    eventDto.setEventDate(null);
+    eventDto.setLocation("Warshava, Poland");
+    RestAssured.given()
+            .contentType(ContentType.JSON)
+            .body(eventDto)
+            .when()
+            .patch("/event")
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .body("eventId", Matchers.equalTo(505))
+            .body("title", Matchers.equalTo("Wargaming Fest"))
+            .body("description", Matchers.equalTo("Kipr summer festival."))
+            .body("location", Matchers.equalTo("Warshava, Poland"));
+  }
 
+  @Test
+  @DataSet(
+          value = "datasets/yml/events.yml",
+          executeScriptsBefore = "scripts/truncateEvents.sql",
+          executeScriptsAfter = "scripts/truncateEvents.sql")
+  void patchExistEventWithNonUniqData() {
+    EventDto eventDto = new EventDto();
+    eventDto.setEventId(407L);
+    eventDto.setTitle("Wargaming Fest");
+    eventDto.setDescription("Big event with little pets from Pokemon universe.");
+    eventDto.setEventDate(null);
+    eventDto.setLocation(null);
+    RestAssured.given()
+            .contentType(ContentType.JSON)
+            .body(eventDto)
+            .when()
+            .patch("/event")
+            .then()
+            .statusCode(HttpStatus.NOT_ACCEPTABLE.value());
+  }
+
+  @Test
+  @DataSet(
+          value = "datasets/yml/events.yml",
+          executeScriptsBefore = "scripts/truncateEvents.sql",
+          executeScriptsAfter = "scripts/truncateEvents.sql")
+  void patchNonExistEvent() {
+    EventDto eventDto = new EventDto();
+    eventDto.setEventId(402L);
+    eventDto.setTitle(null);
+    eventDto.setDescription("A lot of steel!!!");
+    eventDto.setEventDate(null);
+    eventDto.setLocation("Milan, Italy");
+    RestAssured.given()
+            .contentType(ContentType.JSON)
+            .body(eventDto)
+            .when()
+            .patch("/event")
+            .then()
+            .statusCode(HttpStatus.NOT_FOUND.value());
+  }
   @Test
   @DataSet(
       value = "datasets/yml/events.yml",

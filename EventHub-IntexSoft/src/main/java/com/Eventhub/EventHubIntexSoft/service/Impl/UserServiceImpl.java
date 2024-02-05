@@ -7,7 +7,6 @@ import com.Eventhub.EventHubIntexSoft.repository.UserRepository;
 import com.Eventhub.EventHubIntexSoft.service.UserService;
 import java.beans.FeatureDescriptor;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -27,12 +26,7 @@ public class UserServiceImpl implements UserService {
   }
 
   public UserDto createUser(UserDto userDto) {
-    if (Optional.ofNullable(userRepository.findUserByUserId(userDto.getUserId())).isPresent()) {
-      return null;
-    } else {
-      return UserMapper.instance.toUserDto(
-          userRepository.save(UserMapper.instance.toUser(userDto)));
-    }
+    return UserMapper.instance.toUserDto(userRepository.save(UserMapper.instance.toUser(userDto)));
   }
 
   public UserDto getUserByUserId(Long userId) {
@@ -56,14 +50,8 @@ public class UserServiceImpl implements UserService {
   }
 
   @Transactional(isolation = Isolation.READ_COMMITTED)
-  public boolean deleteUserByUserId(Long userId) {
-    return Optional.ofNullable(userRepository.findUserByUserId(userId))
-        .map(
-            user -> {
-              userRepository.deleteUserByUserId(userId);
-              return true;
-            })
-        .orElse(false);
+  public void deleteUserByUserId(Long userId) {
+    userRepository.deleteUserByUserId(userId);
   }
 
   private String[] getNullProperties(UserDto userDto) {
