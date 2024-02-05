@@ -1,7 +1,12 @@
 package com.Eventhub.EventHubIntexSoft.controller;
 
 import com.Eventhub.EventHubIntexSoft.dto.UserDto;
+import com.Eventhub.EventHubIntexSoft.exception.EmailFormatException;
+import com.Eventhub.EventHubIntexSoft.exception.EmptyDtoFieldException;
+import com.Eventhub.EventHubIntexSoft.exception.NonUniqValueException;
+import com.Eventhub.EventHubIntexSoft.exception.PasswordFormatException;
 import com.Eventhub.EventHubIntexSoft.service.UserService;
+import com.Eventhub.EventHubIntexSoft.validator.UserValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -11,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/user")
 public class UserController {
   private final UserService userService;
+  private final UserValidator userValidator;
 
   @GetMapping("/all")
   @Operation(
@@ -71,9 +78,13 @@ public class UserController {
             description = "User creation failed due to conflict",
             content = @Content)
       })
-  public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
-    return userService
-        .createUser(userDto)
+  public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto)
+      throws EmailFormatException,
+          PasswordFormatException,
+          EmptyDtoFieldException,
+          NonUniqValueException {
+    userValidator.validateUserDtoSaveUpdate(userDto);
+    return Optional.ofNullable(userService.createUser(userDto))
         .map(userDataTransferObject -> new ResponseEntity<>(userDataTransferObject, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
   }
@@ -103,8 +114,8 @@ public class UserController {
         @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
       })
   public ResponseEntity<UserDto> getUserByUserId(@PathVariable("id") Long id) {
-    return userService
-        .getUserByUserId(id)
+    return Optional.ofNullable(userService
+        .getUserByUserId(id))
         .map(userDto -> new ResponseEntity<>(userDto, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
@@ -146,8 +157,16 @@ public class UserController {
         @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
       })
   public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto) {
-    return userService
-        .updateUser(userDto)
+    return Optional.ofNullable(userService
+        .updateUser(userDto))
+        .map(userDataTransferObject -> new ResponseEntity<UserDto>(userDataTransferObject, HttpStatus.OK))
+        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+  }
+
+  @PatchMapping
+  public ResponseEntity<UserDto> patchUser(@RequestBody UserDto userDto) {
+    return Optional.ofNullable(userService
+        .patchUser(userDto))
         .map(userDataTransferObject -> new ResponseEntity<>(userDataTransferObject, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }

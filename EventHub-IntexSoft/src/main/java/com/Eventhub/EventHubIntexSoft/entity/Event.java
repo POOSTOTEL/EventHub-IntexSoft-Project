@@ -26,7 +26,7 @@ public class Event {
       example = "11")
   private Long eventId;
 
-  @Column(name = "title", nullable = false)
+  @Column(name = "title", nullable = false, unique = true)
   @Schema(description = "The title of the Event", example = "Spring Festival")
   private String title;
 

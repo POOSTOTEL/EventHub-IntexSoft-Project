@@ -37,7 +37,7 @@ public class Comment {
   @Schema(description = "The text of the Comment", example = "Great event!")
   private String comment;
 
-  @Column(name = "rating")
+  @Column(name = "rating", nullable = false)
   @Schema(
       description = "The rating given by the user",
       example = "9",

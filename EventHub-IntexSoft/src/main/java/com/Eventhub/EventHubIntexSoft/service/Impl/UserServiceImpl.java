@@ -5,9 +5,14 @@ import com.Eventhub.EventHubIntexSoft.entity.User;
 import com.Eventhub.EventHubIntexSoft.mapper.UserMapper;
 import com.Eventhub.EventHubIntexSoft.repository.UserRepository;
 import com.Eventhub.EventHubIntexSoft.service.UserService;
+import java.beans.FeatureDescriptor;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,36 +26,29 @@ public class UserServiceImpl implements UserService {
     return UserMapper.instance.toDtoList(userRepository.findAll());
   }
 
-  public Optional<UserDto> createUser(UserDto userDto) {
+  public UserDto createUser(UserDto userDto) {
     if (Optional.ofNullable(userRepository.findUserByUserId(userDto.getUserId())).isPresent()) {
-      return Optional.empty();
+      return null;
     } else {
-      return Optional.ofNullable(
-          UserMapper.instance.toUserDto(userRepository.save(UserMapper.instance.toUser(userDto))));
+      return UserMapper.instance.toUserDto(
+          userRepository.save(UserMapper.instance.toUser(userDto)));
     }
   }
 
-  public Optional<UserDto> getUserByUserId(Long userId) {
-    return Optional.ofNullable(
-        UserMapper.instance.toUserDto(userRepository.findUserByUserId(userId)));
+  public UserDto getUserByUserId(Long userId) {
+    return UserMapper.instance.toUserDto(userRepository.findUserByUserId(userId));
   }
 
-  public Optional<UserDto> updateUser(UserDto userDto) {
-    return Optional.ofNullable(userRepository.findUserByUserId(userDto.getUserId()))
-        .filter(
-            user ->
-                userRepository
-                        .findAllByEmailOrUserName(userDto.getEmail(), userDto.getUserName())
-                        .isEmpty()
-                    || user.getEmail().equals(userDto.getEmail())
-                    || user.getUserName().equals(userDto.getUserName()))
-        .map(
-            user -> {
-              Optional.ofNullable(userDto.getUserName()).ifPresent(user::setUserName);
-              Optional.ofNullable(userDto.getEmail()).ifPresent(user::setEmail);
-              Optional.ofNullable(userDto.getPassword()).ifPresent(user::setPassword);
-              return UserMapper.instance.toUserDto(userRepository.save(user));
-            });
+  public UserDto updateUser(UserDto userDto) {
+    User user = userRepository.findUserByUserId(userDto.getUserId());
+    BeanUtils.copyProperties(userDto, user, "userId");
+    return UserMapper.instance.toUserDto(userRepository.save(user));
+  }
+
+  public UserDto patchUser(UserDto userDto) {
+    User user = userRepository.findUserByUserId(userDto.getUserId());
+    BeanUtils.copyProperties(userDto, user, getNullProperties(userDto));
+    return UserMapper.instance.toUserDto(userRepository.save(user));
   }
 
   public User findUserByUserId(Long userId) {
@@ -66,5 +64,13 @@ public class UserServiceImpl implements UserService {
               return true;
             })
         .orElse(false);
+  }
+
+  private String[] getNullProperties(UserDto userDto) {
+    final BeanWrapper wrapper = new BeanWrapperImpl(userDto);
+    return Stream.of(wrapper.getPropertyDescriptors())
+        .map(FeatureDescriptor::getName)
+        .filter(name -> wrapper.getPropertyValue(name) == null)
+        .toArray(String[]::new);
   }
 }
