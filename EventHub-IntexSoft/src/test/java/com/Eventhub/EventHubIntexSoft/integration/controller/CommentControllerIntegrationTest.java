@@ -10,7 +10,6 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import java.time.LocalDateTime;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -75,7 +74,7 @@ public class CommentControllerIntegrationTest {
     commentDto.setEventId(407L);
     commentDto.setComment("I work in crypto? Yes!");
     commentDto.setRating(8);
-    commentDto.setCommentDate(LocalDateTime.parse("2024-01-30T10:20:48"));
+    commentDto.setCommentDate(null);
     RestAssured.given()
         .contentType(ContentType.JSON)
         .given()
@@ -87,28 +86,6 @@ public class CommentControllerIntegrationTest {
         .body("userId", Matchers.equalTo(104))
         .body("eventId", Matchers.equalTo(407))
         .body("comment", Matchers.equalTo("I work in crypto? Yes!"));
-  }
-
-  @Test
-  @DataSet(
-      value = "datasets/yml/comments.yml",
-      executeScriptsBefore = "scripts/truncateComments.sql",
-      executeScriptsAfter = "scripts/truncateComments.sql")
-  void testCreateExistComment() {
-    CommentDto commentDto = new CommentDto();
-    commentDto.setCommentId(238L);
-    commentDto.setUserId(505L);
-    commentDto.setEventId(321L);
-    commentDto.setComment("I work in crypto? Yes!");
-    commentDto.setRating(8);
-    commentDto.setCommentDate(LocalDateTime.parse("2024-01-30T10:20:48"));
-    RestAssured.given()
-        .contentType(ContentType.JSON)
-        .body(commentDto)
-        .when()
-        .post("/comment")
-        .then()
-        .statusCode(HttpStatus.CONFLICT.value());
   }
 
   @Test
@@ -149,8 +126,8 @@ public class CommentControllerIntegrationTest {
   void updateExistCommentWithUniqData() {
     CommentDto commentDto = new CommentDto();
     commentDto.setCommentId(238L);
-    commentDto.setUserId(null);
-    commentDto.setEventId(null);
+    commentDto.setUserId(321L);
+    commentDto.setEventId(505L);
     commentDto.setComment("I work in crypto? Yes!");
     commentDto.setRating(8);
     commentDto.setCommentDate(null);
@@ -163,8 +140,7 @@ public class CommentControllerIntegrationTest {
         .statusCode(HttpStatus.OK.value())
         .body("commentId", Matchers.equalTo(238))
         .body("comment", Matchers.equalTo("I work in crypto? Yes!"))
-        .body("rating", Matchers.equalTo(8))
-        .body("commentDate", Matchers.equalTo("2024-01-31T10:24:48.583"));
+        .body("rating", Matchers.equalTo(8));
   }
 
   @Test
@@ -173,6 +149,53 @@ public class CommentControllerIntegrationTest {
       executeScriptsBefore = "scripts/truncateComments.sql",
       executeScriptsAfter = "scripts/truncateComments.sql")
   void updateNonExistComment() {
+    CommentDto commentDto = new CommentDto();
+    commentDto.setCommentId(404L);
+    commentDto.setUserId(321L);
+    commentDto.setEventId(505L);
+    commentDto.setComment("I work in crypto? Yes!");
+    commentDto.setRating(8);
+    commentDto.setCommentDate(null);
+    RestAssured.given()
+        .contentType(ContentType.JSON)
+        .body(commentDto)
+        .when()
+        .put("/comment")
+        .then()
+        .statusCode(HttpStatus.NOT_FOUND.value());
+  }
+
+  @Test
+  @DataSet(
+      value = "datasets/yml/comments.yml",
+      executeScriptsBefore = "scripts/truncateComments.sql",
+      executeScriptsAfter = "scripts/truncateComments.sql")
+  void patchExistCommentWithUniqData() {
+    CommentDto commentDto = new CommentDto();
+    commentDto.setCommentId(238L);
+    commentDto.setUserId(null);
+    commentDto.setEventId(null);
+    commentDto.setComment("I work in crypto? Yes!");
+    commentDto.setRating(8);
+    commentDto.setCommentDate(null);
+    RestAssured.given()
+        .contentType(ContentType.JSON)
+        .body(commentDto)
+        .when()
+        .patch("/comment")
+        .then()
+        .statusCode(HttpStatus.OK.value())
+        .body("commentId", Matchers.equalTo(238))
+        .body("comment", Matchers.equalTo("I work in crypto? Yes!"))
+        .body("rating", Matchers.equalTo(8));
+  }
+
+  @Test
+  @DataSet(
+      value = "datasets/yml/comments.yml",
+      executeScriptsBefore = "scripts/truncateComments.sql",
+      executeScriptsAfter = "scripts/truncateComments.sql")
+  void patchNonExistComment() {
     CommentDto commentDto = new CommentDto();
     commentDto.setCommentId(404L);
     commentDto.setUserId(null);
@@ -184,7 +207,7 @@ public class CommentControllerIntegrationTest {
         .contentType(ContentType.JSON)
         .body(commentDto)
         .when()
-        .put("/comment")
+        .patch("/comment")
         .then()
         .statusCode(HttpStatus.NOT_FOUND.value());
   }

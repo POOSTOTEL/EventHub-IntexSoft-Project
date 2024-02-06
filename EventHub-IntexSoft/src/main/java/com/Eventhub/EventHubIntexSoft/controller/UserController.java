@@ -7,7 +7,7 @@ import com.Eventhub.EventHubIntexSoft.exception.NonUniqValueException;
 import com.Eventhub.EventHubIntexSoft.exception.NotFoundException;
 import com.Eventhub.EventHubIntexSoft.exception.PasswordFormatException;
 import com.Eventhub.EventHubIntexSoft.service.UserService;
-import com.Eventhub.EventHubIntexSoft.validator.user.UserValidator;
+import com.Eventhub.EventHubIntexSoft.validator.UserValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -113,7 +113,7 @@ public class UserController {
       })
   public ResponseEntity<UserDto> getUserByUserId(@PathVariable("userId") Long userId)
       throws NotFoundException {
-    userValidator.validateUserExistingById(userId);
+    userValidator.validateUserExistingByUserId(userId);
     return new ResponseEntity<>(userService.getUserByUserId(userId), HttpStatus.OK);
   }
 
@@ -160,8 +160,7 @@ public class UserController {
           NonUniqValueException,
           NotFoundException {
     userValidator.validateUserDtoUpdate(userDto);
-    userService.updateUser(userDto);
-    return new ResponseEntity<>(userDto, HttpStatus.OK);
+    return new ResponseEntity<>(userService.updateUser(userDto), HttpStatus.OK);
   }
 
   @PatchMapping
@@ -198,7 +197,7 @@ public class UserController {
       })
   public ResponseEntity<String> deleteUserByUserId(@PathVariable("userId") Long userId)
       throws NotFoundException {
-    userValidator.validateUserExistingById(userId);
+    userValidator.validateUserExistingByUserId(userId);
     userService.deleteUserByUserId(userId);
     return new ResponseEntity<>("User with id " + userId + " deleted.", HttpStatus.OK);
   }

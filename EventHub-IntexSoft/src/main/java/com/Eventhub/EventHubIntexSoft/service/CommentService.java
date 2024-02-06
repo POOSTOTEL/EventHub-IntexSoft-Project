@@ -2,16 +2,17 @@ package com.Eventhub.EventHubIntexSoft.service;
 
 import com.Eventhub.EventHubIntexSoft.dto.CommentDto;
 import java.util.List;
-import java.util.Optional;
 
 public interface CommentService {
   List<CommentDto> getAllComments();
 
-  Optional<CommentDto> createComment(CommentDto commentDto);
+  CommentDto createComment(CommentDto commentDto);
 
-  Optional<CommentDto> getCommentByCommentId(Long commentId);
+  CommentDto getCommentByCommentId(Long commentId);
 
-  Optional<CommentDto> updateComment(CommentDto commentDto);
+  CommentDto updateComment(CommentDto commentDto);
 
-  boolean deleteCommentByCommentId(Long commentId);
+  CommentDto patchComment(CommentDto commentDto);
+
+  void deleteCommentByCommentId(Long commentId);
 }

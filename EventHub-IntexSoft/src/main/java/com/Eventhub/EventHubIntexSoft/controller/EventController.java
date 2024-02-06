@@ -5,7 +5,7 @@ import com.Eventhub.EventHubIntexSoft.exception.EmptyDtoFieldException;
 import com.Eventhub.EventHubIntexSoft.exception.NonUniqValueException;
 import com.Eventhub.EventHubIntexSoft.exception.NotFoundException;
 import com.Eventhub.EventHubIntexSoft.service.EventService;
-import com.Eventhub.EventHubIntexSoft.validator.event.EventValidator;
+import com.Eventhub.EventHubIntexSoft.validator.EventValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -108,7 +108,7 @@ public class EventController {
       })
   public ResponseEntity<EventDto> getEventByEventId(@PathVariable("eventId") Long eventId)
       throws NotFoundException {
-    eventValidator.validateEventExistingById(eventId);
+    eventValidator.validateEventExistingByEventId(eventId);
     return new ResponseEntity<>(eventService.getEventByEventId(eventId), HttpStatus.OK);
   }
 
@@ -184,7 +184,7 @@ public class EventController {
         @ApiResponse(responseCode = "404", description = "Event not found", content = @Content)
       })
   public ResponseEntity<String> deleteEventByEventId(@PathVariable("eventId") Long eventId) throws NotFoundException {
-    eventValidator.validateEventExistingById(eventId);
+    eventValidator.validateEventExistingByEventId(eventId);
     eventService.deleteEventByEventId(eventId);
     return ResponseEntity.ok("Event with id " + eventId + " deleted.");
   }

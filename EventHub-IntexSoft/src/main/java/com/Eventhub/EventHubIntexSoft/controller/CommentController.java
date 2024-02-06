@@ -1,7 +1,10 @@
 package com.Eventhub.EventHubIntexSoft.controller;
 
 import com.Eventhub.EventHubIntexSoft.dto.CommentDto;
+import com.Eventhub.EventHubIntexSoft.exception.EmptyDtoFieldException;
+import com.Eventhub.EventHubIntexSoft.exception.NotFoundException;
 import com.Eventhub.EventHubIntexSoft.service.CommentService;
+import com.Eventhub.EventHubIntexSoft.validator.CommentValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 public class CommentController {
 
   private final CommentService commentService;
+  private final CommentValidator commentValidator;
 
   @GetMapping("/all")
   @Operation(
@@ -71,16 +75,13 @@ public class CommentController {
             description = "Comment creation failed due to conflict",
             content = @Content)
       })
-  public ResponseEntity<CommentDto> createComment(@RequestBody CommentDto commentDto) {
-    return commentService
-        .createComment(commentDto)
-        .map(
-            commentDataTransferObject ->
-                new ResponseEntity<>(commentDataTransferObject, HttpStatus.OK))
-        .orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
+  public ResponseEntity<CommentDto> createComment(@RequestBody CommentDto commentDto)
+      throws NotFoundException, EmptyDtoFieldException {
+    commentValidator.validateCommentDtoSave(commentDto);
+    return new ResponseEntity<>(commentService.createComment(commentDto), HttpStatus.OK);
   }
 
-  @GetMapping("/{id}")
+  @GetMapping("/{commentId}")
   @Operation(
       summary = "Get a comment by ID",
       description =
@@ -104,11 +105,10 @@ public class CommentController {
             }),
         @ApiResponse(responseCode = "404", description = "Comment not found", content = @Content)
       })
-  public ResponseEntity<CommentDto> getCommentByCommentId(@PathVariable("id") Long commentId) {
-    return commentService
-        .getCommentByCommentId(commentId)
-        .map(commentDto -> new ResponseEntity<>(commentDto, HttpStatus.OK))
-        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+  public ResponseEntity<CommentDto> getCommentByCommentId(@PathVariable("commentId") Long commentId)
+      throws NotFoundException {
+    commentValidator.validateCommentExistingByCommentId(commentId);
+    return new ResponseEntity<>(commentService.getCommentByCommentId(commentId), HttpStatus.OK);
   }
 
   @PutMapping
@@ -151,16 +151,22 @@ public class CommentController {
             }),
         @ApiResponse(responseCode = "404", description = "Comment not found", content = @Content)
       })
-  public ResponseEntity<CommentDto> updateComment(@RequestBody CommentDto commentDto) {
-    return commentService
-        .updateComment(commentDto)
-        .map(
-            commentDataTransferObject ->
-                new ResponseEntity<>(commentDataTransferObject, HttpStatus.OK))
-        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+  public ResponseEntity<CommentDto> updateComment(@RequestBody CommentDto commentDto)
+      throws NotFoundException, EmptyDtoFieldException {
+    commentValidator.validateCommentDtoUpdate(commentDto);
+    return new ResponseEntity<>(commentService.updateComment(commentDto), HttpStatus.OK);
   }
 
-  @DeleteMapping("/{id}")
+  @PatchMapping
+  public ResponseEntity<CommentDto> patchComment(@RequestBody CommentDto commentDto)
+      throws EmptyDtoFieldException, NotFoundException {
+    commentValidator.validateCommentDtoPatch(commentDto);
+    commentService.patchComment(commentDto);
+    return new ResponseEntity<>(
+        commentService.getCommentByCommentId(commentDto.getCommentId()), HttpStatus.OK);
+  }
+
+  @DeleteMapping("/{commentId}")
   @Operation(
       summary = "Delete a comment by ID",
       description =
@@ -180,9 +186,10 @@ public class CommentController {
             content = {@Content(mediaType = "text/plain", schema = @Schema(type = "string"))}),
         @ApiResponse(responseCode = "404", description = "Comment not found", content = @Content)
       })
-  public ResponseEntity<String> deleteCommentByCommentId(@PathVariable("id") Long commentId) {
-    return commentService.deleteCommentByCommentId(commentId)
-        ? ResponseEntity.ok("Comment with id " + commentId + " deleted.")
-        : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+  public ResponseEntity<String> deleteCommentByCommentId(@PathVariable("commentId") Long commentId)
+      throws NotFoundException {
+    commentValidator.validateCommentExistingByCommentId(commentId);
+    commentService.deleteCommentByCommentId(commentId);
+    return ResponseEntity.ok("Comment with id " + commentId + " deleted.");
   }
 }

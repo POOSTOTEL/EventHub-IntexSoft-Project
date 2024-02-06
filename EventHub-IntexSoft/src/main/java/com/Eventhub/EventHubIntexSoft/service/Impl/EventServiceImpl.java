@@ -1,7 +1,6 @@
 package com.Eventhub.EventHubIntexSoft.service.Impl;
 
 import com.Eventhub.EventHubIntexSoft.dto.EventDto;
-import com.Eventhub.EventHubIntexSoft.dto.UserDto;
 import com.Eventhub.EventHubIntexSoft.entity.Event;
 import com.Eventhub.EventHubIntexSoft.mapper.EventMapper;
 import com.Eventhub.EventHubIntexSoft.repository.EventRepository;
@@ -36,8 +35,9 @@ public class EventServiceImpl implements EventService {
   }
 
   public EventDto updateEvent(EventDto eventDto) {
-    return EventMapper.instance.toEventDto(
-        eventRepository.save(EventMapper.instance.toEvent(eventDto)));
+    Event event = eventRepository.findEventByEventId(eventDto.getEventId());
+    BeanUtils.copyProperties(eventDto, event, "eventId");
+    return EventMapper.instance.toEventDto(eventRepository.save(event));
   }
 
   public EventDto patchEvent(EventDto eventDto) {
