@@ -47,5 +47,8 @@ public class Comment {
 
   @Column(name = "comment_date")
   @Schema(description = "The date when the Comment was posted", example = "2024-03-21T10:15:30")
-  private LocalDateTime commentDate;
+  private LocalDateTime creationTime;
+
+  @Column(name = "update_date")
+  private LocalDateTime updateTime;
 }

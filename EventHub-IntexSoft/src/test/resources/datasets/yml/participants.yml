@@ -2,9 +2,11 @@ participants:
   - participant_id: 728
     event_id: 505
     user_id: 321
+    participant_status: 0
   - participant_id: 97
     event_id: 505
     user_id: 104
+    participant_status: 0
 
 users:
   - user_id: 321

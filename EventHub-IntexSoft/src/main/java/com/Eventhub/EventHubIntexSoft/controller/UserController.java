@@ -1,11 +1,10 @@
 package com.Eventhub.EventHubIntexSoft.controller;
 
 import com.Eventhub.EventHubIntexSoft.dto.UserDto;
-import com.Eventhub.EventHubIntexSoft.exception.EmailFormatException;
 import com.Eventhub.EventHubIntexSoft.exception.EmptyDtoFieldException;
+import com.Eventhub.EventHubIntexSoft.exception.FormatException;
 import com.Eventhub.EventHubIntexSoft.exception.NonUniqValueException;
 import com.Eventhub.EventHubIntexSoft.exception.NotFoundException;
-import com.Eventhub.EventHubIntexSoft.exception.PasswordFormatException;
 import com.Eventhub.EventHubIntexSoft.service.UserService;
 import com.Eventhub.EventHubIntexSoft.validator.UserValidator;
 import io.swagger.v3.oas.annotations.Operation;
@@ -79,10 +78,7 @@ public class UserController {
             content = @Content)
       })
   public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto)
-      throws EmailFormatException,
-          PasswordFormatException,
-          EmptyDtoFieldException,
-          NonUniqValueException {
+      throws FormatException, EmptyDtoFieldException, NonUniqValueException {
     userValidator.validateUserDtoSave(userDto);
     return new ResponseEntity<>(userService.createUser(userDto), HttpStatus.OK);
   }
@@ -154,22 +150,14 @@ public class UserController {
         @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
       })
   public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto)
-      throws EmailFormatException,
-          PasswordFormatException,
-          EmptyDtoFieldException,
-          NonUniqValueException,
-          NotFoundException {
+      throws FormatException, EmptyDtoFieldException, NonUniqValueException, NotFoundException {
     userValidator.validateUserDtoUpdate(userDto);
     return new ResponseEntity<>(userService.updateUser(userDto), HttpStatus.OK);
   }
 
   @PatchMapping
   public ResponseEntity<UserDto> patchUser(@RequestBody UserDto userDto)
-      throws EmailFormatException,
-          PasswordFormatException,
-          NonUniqValueException,
-          NotFoundException,
-          EmptyDtoFieldException {
+      throws FormatException, NonUniqValueException, NotFoundException, EmptyDtoFieldException {
     userValidator.validateUserDtoPatch(userDto);
     userService.patchUser(userDto);
     return new ResponseEntity<>(userService.getUserByUserId(userDto.getUserId()), HttpStatus.OK);

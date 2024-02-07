@@ -11,60 +11,35 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CommentValidator {
+public class CommentValidator extends FieldValidator {
   @Autowired protected CommentRepository commentRepository;
   @Autowired protected EventRepository eventRepository;
   @Autowired protected UserRepository userRepository;
 
-  public class EventIdValidator extends FieldValidator {
-    @Override
-    public void validate(Long eventId) throws EmptyDtoFieldException, NotFoundException {
-      validateNullField(eventId);
-      validateExistingEventById(eventId);
-    }
-
-    public void validateExistingEventById(Long eventId)
-        throws EmptyDtoFieldException, NotFoundException {
-      if (Objects.isNull(eventRepository.findEventByEventId(eventId))) {
-        throw new NotFoundException();
-      }
-    }
+  public void validateEventId(Long eventId) throws EmptyDtoFieldException, NotFoundException {
+    validateNullField(eventId);
+    validateExistingEventById(eventId);
   }
 
-  public class UserIdValidator extends FieldValidator {
-    @Override
-    public void validate(Long userId) throws NotFoundException, EmptyDtoFieldException {
-      validateNullField(userId);
-      validateExistingUserByUserId(userId);
-    }
-
-    public void validateExistingUserByUserId(Long userId) throws NotFoundException {
-      if (Objects.isNull(userRepository.findUserByUserId(userId))) {
-        throw new NotFoundException();
-      }
-    }
+  public void validateUserId(Long userId) throws NotFoundException, EmptyDtoFieldException {
+    validateNullField(userId);
+    validateExistingUserByUserId(userId);
   }
 
-  public class TextCommentValidator extends FieldValidator {
-    @Override
-    public void validate(String comment) throws EmptyDtoFieldException {
-      validateNullField(comment);
-    }
+  public void validateCommentText(String comment) throws EmptyDtoFieldException {
+    validateNullField(comment);
   }
 
-  public class RatingValidator extends FieldValidator {
-    @Override
-    public void validate(Integer rating) throws EmptyDtoFieldException {
-      validateNullField(rating);
-    }
+  public void validateRating(Integer rating) throws EmptyDtoFieldException {
+    validateNullField(rating);
   }
 
   public void validateCommentDtoSave(CommentDto commentDto)
       throws NotFoundException, EmptyDtoFieldException {
-    new EventIdValidator().validate(commentDto.getEventId());
-    new UserIdValidator().validate(commentDto.getUserId());
-    new TextCommentValidator().validate(commentDto.getComment());
-    new RatingValidator().validate(commentDto.getRating());
+    validateEventId(commentDto.getEventId());
+    validateUserId(commentDto.getUserId());
+    validateCommentText(commentDto.getComment());
+    validateRating(commentDto.getRating());
   }
 
   public void validateCommentDtoUpdate(CommentDto commentDto)
@@ -77,21 +52,34 @@ public class CommentValidator {
       throws NotFoundException, EmptyDtoFieldException {
     validateCommentExistingByCommentId(commentDto.getCommentId());
     if (Objects.nonNull(commentDto.getEventId())) {
-      new EventIdValidator().validate(commentDto.getEventId());
+      validateEventId(commentDto.getEventId());
     }
     if (Objects.nonNull(commentDto.getUserId())) {
-      new UserIdValidator().validate(commentDto.getUserId());
+      validateUserId(commentDto.getUserId());
     }
     if (Objects.nonNull(commentDto.getComment())) {
-      new TextCommentValidator().validate(commentDto.getComment());
+      validateCommentText(commentDto.getComment());
     }
     if (Objects.nonNull(commentDto.getRating())) {
-      new RatingValidator().validate(commentDto.getRating());
+      validateRating(commentDto.getRating());
     }
   }
 
   public void validateCommentExistingByCommentId(Long commentId) throws NotFoundException {
     if (Objects.isNull(commentRepository.findCommentByCommentId(commentId))) {
+      throw new NotFoundException();
+    }
+  }
+
+  public void validateExistingEventById(Long eventId)
+      throws NotFoundException {
+    if (Objects.isNull(eventRepository.findEventByEventId(eventId))) {
+      throw new NotFoundException();
+    }
+  }
+
+  public void validateExistingUserByUserId(Long userId) throws NotFoundException {
+    if (Objects.isNull(userRepository.findUserByUserId(userId))) {
       throw new NotFoundException();
     }
   }

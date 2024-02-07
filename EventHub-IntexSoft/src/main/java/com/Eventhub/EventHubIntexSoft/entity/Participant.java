@@ -1,5 +1,6 @@
 package com.Eventhub.EventHubIntexSoft.entity;
 
+import com.Eventhub.EventHubIntexSoft.enumiration.ParticipantStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -31,4 +32,7 @@ public class Participant {
   @JoinColumn(name = "event_id", nullable = false)
   @Schema(description = "The event associated with the participant", example = "4")
   private Event event;
+  @Enumerated(EnumType.ORDINAL)
+  @Column(name = "participant_status")
+  private ParticipantStatus status;
 }

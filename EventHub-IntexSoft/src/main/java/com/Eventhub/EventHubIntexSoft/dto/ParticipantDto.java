@@ -1,5 +1,6 @@
 package com.Eventhub.EventHubIntexSoft.dto;
 
+import com.Eventhub.EventHubIntexSoft.enumiration.ParticipantStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -18,4 +19,6 @@ public class ParticipantDto {
 
   @Schema(description = "The Event id associated with the ParticipantDto", example = "2")
   private Long eventId;
+
+  private String status;
 }

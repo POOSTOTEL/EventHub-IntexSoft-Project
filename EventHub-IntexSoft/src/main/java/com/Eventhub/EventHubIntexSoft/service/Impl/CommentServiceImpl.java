@@ -28,7 +28,7 @@ public class CommentServiceImpl implements CommentService {
   }
 
   public CommentDto createComment(CommentDto commentDto) {
-    commentDto.setCommentDate(LocalDateTime.now());
+    commentDto.setCreationTime(LocalDateTime.now());
     return commentMapper.toCommentDto(commentRepository.save(commentMapper.toComment(commentDto)));
   }
 
@@ -38,15 +38,15 @@ public class CommentServiceImpl implements CommentService {
 
   public CommentDto updateComment(CommentDto commentDto) {
     Comment comment = commentRepository.findCommentByCommentId(commentDto.getCommentId());
-    BeanUtils.copyProperties(commentDto, comment, "commentId", "commentDate");
-    comment.setCommentDate(LocalDateTime.now());
+    BeanUtils.copyProperties(commentDto, comment, "commentId", "creationTime", "updateTime");
+    comment.setUpdateTime(LocalDateTime.now());
     return commentMapper.toCommentDto(commentRepository.save(comment));
   }
 
   public CommentDto patchComment(CommentDto commentDto) {
     Comment comment = commentRepository.findCommentByCommentId(commentDto.getCommentId());
     BeanUtils.copyProperties(commentDto, comment, getNullProperties(commentDto));
-    comment.setCommentDate(LocalDateTime.now());
+    comment.setUpdateTime(LocalDateTime.now());
     return commentMapper.toCommentDto(commentRepository.save(comment));
   }
 
@@ -59,7 +59,13 @@ public class CommentServiceImpl implements CommentService {
     final BeanWrapper wrapper = new BeanWrapperImpl(commentDto);
     return Stream.of(wrapper.getPropertyDescriptors())
         .map(FeatureDescriptor::getName)
-        .filter(name -> wrapper.getPropertyValue(name) == null)
+        // todo вырезать костыль в виде тройного ИЛИ
+        .filter(
+            name ->
+                wrapper.getPropertyValue(name) == null
+                    || wrapper.getPropertyValue(name) == "commentId"
+                    || wrapper.getPropertyValue(name) == "creationTime"
+                    || wrapper.getPropertyValue(name) == "updateTime")
         .toArray(String[]::new);
   }
 }

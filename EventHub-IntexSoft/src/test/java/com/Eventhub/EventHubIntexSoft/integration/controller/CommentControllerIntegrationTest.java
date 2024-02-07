@@ -10,6 +10,7 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import java.time.LocalDateTime;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -74,7 +75,8 @@ public class CommentControllerIntegrationTest {
     commentDto.setEventId(407L);
     commentDto.setComment("I work in crypto? Yes!");
     commentDto.setRating(8);
-    commentDto.setCommentDate(null);
+    commentDto.setCreationTime(null);
+    commentDto.setUpdateTime(null);
     RestAssured.given()
         .contentType(ContentType.JSON)
         .given()
@@ -130,7 +132,8 @@ public class CommentControllerIntegrationTest {
     commentDto.setEventId(505L);
     commentDto.setComment("I work in crypto? Yes!");
     commentDto.setRating(8);
-    commentDto.setCommentDate(null);
+    commentDto.setCreationTime(LocalDateTime.of(2023, 3, 12, 14, 11, 21, 1292));
+    commentDto.setUpdateTime(null);
     RestAssured.given()
         .contentType(ContentType.JSON)
         .body(commentDto)
@@ -140,7 +143,9 @@ public class CommentControllerIntegrationTest {
         .statusCode(HttpStatus.OK.value())
         .body("commentId", Matchers.equalTo(238))
         .body("comment", Matchers.equalTo("I work in crypto? Yes!"))
-        .body("rating", Matchers.equalTo(8));
+        .body("rating", Matchers.equalTo(8))
+        .body("creationTime", Matchers.not(LocalDateTime.of(2023, 3, 12, 14, 11, 21, 1292)))
+        .body("updateTime", Matchers.notNullValue());
   }
 
   @Test
@@ -155,7 +160,8 @@ public class CommentControllerIntegrationTest {
     commentDto.setEventId(505L);
     commentDto.setComment("I work in crypto? Yes!");
     commentDto.setRating(8);
-    commentDto.setCommentDate(null);
+    commentDto.setCreationTime(LocalDateTime.of(2023, 3, 12, 14, 11, 21, 1292));
+    commentDto.setUpdateTime(null);
     RestAssured.given()
         .contentType(ContentType.JSON)
         .body(commentDto)
@@ -177,7 +183,8 @@ public class CommentControllerIntegrationTest {
     commentDto.setEventId(null);
     commentDto.setComment("I work in crypto? Yes!");
     commentDto.setRating(8);
-    commentDto.setCommentDate(null);
+    commentDto.setCreationTime(LocalDateTime.of(2023, 3, 12, 14, 11, 21, 1292));
+    commentDto.setUpdateTime(null);
     RestAssured.given()
         .contentType(ContentType.JSON)
         .body(commentDto)
@@ -187,7 +194,10 @@ public class CommentControllerIntegrationTest {
         .statusCode(HttpStatus.OK.value())
         .body("commentId", Matchers.equalTo(238))
         .body("comment", Matchers.equalTo("I work in crypto? Yes!"))
-        .body("rating", Matchers.equalTo(8));
+        .body("rating", Matchers.equalTo(8))
+            .body("creationTime", Matchers.not(LocalDateTime.of(2023, 3, 12, 14, 11, 21, 1292)))
+
+            .body("updateTime", Matchers.notNullValue());
   }
 
   @Test
@@ -202,7 +212,8 @@ public class CommentControllerIntegrationTest {
     commentDto.setEventId(null);
     commentDto.setComment("I work in crypto? Yes!");
     commentDto.setRating(8);
-    commentDto.setCommentDate(null);
+    commentDto.setCreationTime(null);
+    commentDto.setUpdateTime(null);
     RestAssured.given()
         .contentType(ContentType.JSON)
         .body(commentDto)

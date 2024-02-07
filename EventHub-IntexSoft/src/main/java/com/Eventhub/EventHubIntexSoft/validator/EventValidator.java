@@ -12,55 +12,36 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EventValidator {
+public class EventValidator extends FieldValidator {
   @Autowired protected EventRepository eventRepository;
 
   String dateTimePattern = "dd-MM-yyyy HH:mm:ss";
   DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimePattern);
 
-  public class DescriptionValidator extends FieldValidator {
-    @Override
-    public void validate(String description) throws EmptyDtoFieldException {
-      validateNullField(description);
-    }
+  public void validateDescription(String description) throws EmptyDtoFieldException {
+    validateNullField(description);
   }
 
-  public class TitleValidator extends FieldValidator {
-    @Override
-    public void validate(String title, Long eventId)
-        throws EmptyDtoFieldException, NonUniqValueException {
-      validateNullField(title);
-      validateUniqTitle(title, eventId);
-    }
-
-    public void validateUniqTitle(String title, Long eventId) throws NonUniqValueException {
-      Event event = eventRepository.findEventByTitle(title);
-      if (Objects.nonNull(event) && !event.getEventId().equals(eventId)) {
-        throw new NonUniqValueException();
-      }
-    }
+  public void validateTitle(String title, Long eventId)
+      throws EmptyDtoFieldException, NonUniqValueException {
+    validateNullField(title);
+    validateUniqTitle(title, eventId);
   }
 
-  public class EventDateValidator extends FieldValidator {
-    @Override
-    public void validate(String eventDate) throws EmptyDtoFieldException {
-      validateNullField(eventDate);
-    }
+  public void validateEventDate(String eventDate) throws EmptyDtoFieldException {
+    validateNullField(eventDate);
   }
 
-  public class LocationValidator extends FieldValidator {
-    @Override
-    public void validate(String location) throws EmptyDtoFieldException {
-      validateNullField(location);
-    }
+  public void validateLocation(String location) throws EmptyDtoFieldException {
+    validateNullField(location);
   }
 
   public void validateEventDtoSave(EventDto eventDto)
       throws EmptyDtoFieldException, NonUniqValueException {
-    new TitleValidator().validate(eventDto.getTitle(), eventDto.getEventId());
-    new DescriptionValidator().validate(eventDto.getDescription());
-    new EventDateValidator().validate(eventDto.getEventDate().format(dateTimeFormatter));
-    new LocationValidator().validate(eventDto.getLocation());
+    validateTitle(eventDto.getTitle(), eventDto.getEventId());
+    validateDescription(eventDto.getDescription());
+    validateEventDate(eventDto.getEventDate().format(dateTimeFormatter));
+    validateLocation(eventDto.getLocation());
   }
 
   public void validateEventDtoUpdate(EventDto eventDto)
@@ -73,22 +54,29 @@ public class EventValidator {
       throws NonUniqValueException, NotFoundException, EmptyDtoFieldException {
     validateEventExistingByEventId(eventDto.getEventId());
     if (Objects.nonNull(eventDto.getTitle())) {
-      new TitleValidator().validate(eventDto.getTitle(), eventDto.getEventId());
+      validateTitle(eventDto.getTitle(), eventDto.getEventId());
     }
     if (Objects.nonNull(eventDto.getDescription())) {
-      new DescriptionValidator().validate(eventDto.getDescription());
+      validateDescription(eventDto.getDescription());
     }
     if (Objects.nonNull(eventDto.getEventDate())) {
-      new EventDateValidator().validate(eventDto.getEventDate().format(dateTimeFormatter));
+      validateEventDate(eventDto.getEventDate().format(dateTimeFormatter));
     }
     if (Objects.nonNull(eventDto.getLocation())) {
-      new LocationValidator().validate(eventDto.getLocation());
+      validateLocation(eventDto.getLocation());
     }
   }
 
   public void validateEventExistingByEventId(Long eventId) throws NotFoundException {
     if (Objects.isNull(eventRepository.findEventByEventId(eventId))) {
       throw new NotFoundException();
+    }
+  }
+
+  public void validateUniqTitle(String title, Long eventId) throws NonUniqValueException {
+    Event event = eventRepository.findEventByTitle(title);
+    if (Objects.nonNull(event) && !event.getEventId().equals(eventId)) {
+      throw new NonUniqValueException();
     }
   }
 }

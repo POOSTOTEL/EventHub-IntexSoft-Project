@@ -72,6 +72,7 @@ public class ParticipantControllerIntegrationTest {
     participantDto.setParticipantId(14L);
     participantDto.setUserId(104L);
     participantDto.setEventId(407L);
+    participantDto.setStatus(null);
     RestAssured.given()
         .contentType(ContentType.JSON)
         .given()
@@ -81,7 +82,8 @@ public class ParticipantControllerIntegrationTest {
         .then()
         .statusCode(HttpStatus.OK.value())
         .body("userId", Matchers.equalTo(104))
-        .body("eventId", Matchers.equalTo(407));
+        .body("eventId", Matchers.equalTo(407))
+        .body("status", Matchers.equalTo("TRACKING"));
   }
 
   @Test
@@ -94,13 +96,14 @@ public class ParticipantControllerIntegrationTest {
     participantDto.setParticipantId(728L);
     participantDto.setUserId(505L);
     participantDto.setEventId(321L);
+    participantDto.setStatus("TRACKING");
     RestAssured.given()
         .contentType(ContentType.JSON)
         .body(participantDto)
         .when()
         .post("/participant")
         .then()
-        .statusCode(HttpStatus.CONFLICT.value());
+        .statusCode(HttpStatus.NOT_FOUND.value());
   }
 
   @Test

@@ -31,5 +31,7 @@ public class CommentDto {
   private Integer rating;
 
   @Schema(description = "The date when the CommentDto was posted", example = "2024-03-21T10:15:30")
-  private LocalDateTime commentDate;
+  private LocalDateTime creationTime;
+
+  private LocalDateTime updateTime;
 }
