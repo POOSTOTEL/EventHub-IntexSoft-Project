@@ -2,6 +2,7 @@ package com.Eventhub.EventHubIntexSoft.validator;
 
 import com.Eventhub.EventHubIntexSoft.dto.CommentDto;
 import com.Eventhub.EventHubIntexSoft.exception.EmptyDtoFieldException;
+import com.Eventhub.EventHubIntexSoft.exception.FormatException;
 import com.Eventhub.EventHubIntexSoft.exception.NotFoundException;
 import com.Eventhub.EventHubIntexSoft.repository.CommentRepository;
 import com.Eventhub.EventHubIntexSoft.repository.EventRepository;
@@ -30,12 +31,13 @@ public class CommentValidator extends FieldValidator {
     validateNullField(comment);
   }
 
-  public void validateRating(Integer rating) throws EmptyDtoFieldException {
+  public void validateRating(Integer rating) throws EmptyDtoFieldException, FormatException {
     validateNullField(rating);
+    validateRatingFormat(rating);
   }
 
   public void validateCommentDtoSave(CommentDto commentDto)
-      throws NotFoundException, EmptyDtoFieldException {
+      throws NotFoundException, EmptyDtoFieldException, FormatException {
     validateEventId(commentDto.getEventId());
     validateUserId(commentDto.getUserId());
     validateCommentText(commentDto.getComment());
@@ -43,13 +45,13 @@ public class CommentValidator extends FieldValidator {
   }
 
   public void validateCommentDtoUpdate(CommentDto commentDto)
-      throws NotFoundException, EmptyDtoFieldException {
+      throws NotFoundException, EmptyDtoFieldException, FormatException {
     validateCommentExistingByCommentId(commentDto.getCommentId());
     validateCommentDtoSave(commentDto);
   }
 
   public void validateCommentDtoPatch(CommentDto commentDto)
-      throws NotFoundException, EmptyDtoFieldException {
+      throws NotFoundException, EmptyDtoFieldException, FormatException {
     validateCommentExistingByCommentId(commentDto.getCommentId());
     if (Objects.nonNull(commentDto.getEventId())) {
       validateEventId(commentDto.getEventId());
@@ -71,8 +73,7 @@ public class CommentValidator extends FieldValidator {
     }
   }
 
-  public void validateExistingEventById(Long eventId)
-      throws NotFoundException {
+  public void validateExistingEventById(Long eventId) throws NotFoundException {
     if (Objects.isNull(eventRepository.findEventByEventId(eventId))) {
       throw new NotFoundException();
     }
@@ -81,6 +82,12 @@ public class CommentValidator extends FieldValidator {
   public void validateExistingUserByUserId(Long userId) throws NotFoundException {
     if (Objects.isNull(userRepository.findUserByUserId(userId))) {
       throw new NotFoundException();
+    }
+  }
+
+  public void validateRatingFormat(Integer rating) throws FormatException {
+    if (rating < 0 || rating > 10) {
+      throw new FormatException();
     }
   }
 }

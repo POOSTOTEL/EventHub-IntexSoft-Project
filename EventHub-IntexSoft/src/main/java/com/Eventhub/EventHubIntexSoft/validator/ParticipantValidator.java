@@ -95,11 +95,12 @@ public class ParticipantValidator extends FieldValidator {
         Optional.ofNullable(participantRepository.findParticipantByParticipantId(participantId));
     if (participant.isPresent()) {
       ParticipantStatus statusOfExistParticipant = participant.get().getStatus();
-      if (statusOfExistParticipant.ordinal() > 1 || !status.equals("MISSED")) {
+      if (statusOfExistParticipant.ordinal() > 1
+          || !status.equals(ParticipantStatus.MISSED.name())) {
         throw new FormatException();
       }
     } else {
-      if (!status.equals("TRACKING")) {
+      if (!status.equals(ParticipantStatus.TRACKING.name())) {
         throw new FormatException();
       }
     }
