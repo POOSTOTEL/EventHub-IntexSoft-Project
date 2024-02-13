@@ -1,14 +1,11 @@
 package com.Eventhub.EventHubIntexSoft.entity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "comments")
 public class Comment {
@@ -21,20 +18,23 @@ public class Comment {
   @Column(name = "comment_id")
   private Long commentId;
 
-  @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "event_id", nullable = false)
   private Event event;
 
-  @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
   @Column(name = "comment")
   private String comment;
 
-  @Column(name = "rating")
+  @Column(name = "rating", nullable = false)
   private Integer rating;
 
   @Column(name = "comment_date")
-  private LocalDateTime commentDate;
+  private LocalDateTime creationTime;
+
+  @Column(name = "update_date")
+  private LocalDateTime updateTime;
 }

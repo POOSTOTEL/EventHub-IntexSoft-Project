@@ -1,0 +1,9 @@
+users:
+  - user_id: 321
+    user_name: "Pablo"
+    user_email: "pablo123@mail.de"
+    password: "qWErty%1234"
+  - user_id: 104
+    user_name: "Entony"
+    user_email: "ento912@mail.fe"
+    password: "alobAma2003%"

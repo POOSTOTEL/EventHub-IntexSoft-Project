@@ -1,14 +1,17 @@
 package com.Eventhub.EventHubIntexSoft.service.Impl;
 
-import com.Eventhub.EventHubIntexSoft.DTO.UserDto;
+import com.Eventhub.EventHubIntexSoft.dto.UserDto;
 import com.Eventhub.EventHubIntexSoft.entity.User;
-import com.Eventhub.EventHubIntexSoft.mapper.UserListMapper;
 import com.Eventhub.EventHubIntexSoft.mapper.UserMapper;
 import com.Eventhub.EventHubIntexSoft.repository.UserRepository;
 import com.Eventhub.EventHubIntexSoft.service.UserService;
+import java.beans.FeatureDescriptor;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,43 +22,43 @@ public class UserServiceImpl implements UserService {
   private final UserRepository userRepository;
 
   public List<UserDto> getAllUsers() {
-    return UserListMapper.instance.toDtoList(userRepository.findAll());
+    return UserMapper.instance.toDtoList(userRepository.findAll());
   }
 
-  public Optional<UserDto> createUser(User user) {
-    return Optional.ofNullable(UserMapper.instance.toUserDto(userRepository.save(user)));
+  public UserDto createUser(UserDto userDto) {
+    return UserMapper.instance.toUserDto(userRepository.save(UserMapper.instance.toUser(userDto)));
   }
 
-  public Optional<UserDto> getUserByUserId(Long userId) {
-    return Optional.ofNullable(UserMapper.instance.toUserDto(userRepository.findUserByUserId(userId)));
+  public UserDto getUserByUserId(Long userId) {
+    return UserMapper.instance.toUserDto(userRepository.findUserByUserId(userId));
   }
 
-  public Optional<UserDto> updateUser(UserDto userDto) {
-    return Optional.ofNullable(userRepository.findUserByUserId(userDto.getUserId()))
-        .filter(
-            user ->
-                userRepository
-                        .findAllByEmailOrUserName(userDto.getEmail(), userDto.getUserName())
-                        .isEmpty()
-                    || user.getEmail().equals(userDto.getEmail())
-                    || user.getUserName().equals(userDto.getUserName()))
-        .map(
-            user -> {
-              Optional.ofNullable(userDto.getUserName()).ifPresent(user::setUserName);
-              Optional.ofNullable(userDto.getEmail()).ifPresent(user::setEmail);
-              Optional.ofNullable(userDto.getPassword()).ifPresent(user::setPassword);
-              return UserMapper.instance.toUserDto(userRepository.save(user));
-            });
+  public UserDto updateUser(UserDto userDto) {
+    User user = userRepository.findUserByUserId(userDto.getUserId());
+    BeanUtils.copyProperties(userDto, user, "userId");
+    return UserMapper.instance.toUserDto(userRepository.save(user));
+  }
+
+  public UserDto patchUser(UserDto userDto) {
+    User user = userRepository.findUserByUserId(userDto.getUserId());
+    BeanUtils.copyProperties(userDto, user, getNullProperties(userDto));
+    return UserMapper.instance.toUserDto(userRepository.save(user));
+  }
+
+  public User findUserByUserId(Long userId) {
+    return userRepository.findUserByUserId(userId);
   }
 
   @Transactional(isolation = Isolation.READ_COMMITTED)
-  public boolean deleteUserByUserId(Long userId) {
-    return Optional.ofNullable(userRepository.findUserById(userId))
-        .map(
-            user -> {
-              userRepository.deleteUserById(userId);
-              return true;
-            })
-        .orElse(false);
+  public void deleteUserByUserId(Long userId) {
+    userRepository.deleteUserByUserId(userId);
+  }
+
+  private String[] getNullProperties(UserDto userDto) {
+    final BeanWrapper wrapper = new BeanWrapperImpl(userDto);
+    return Stream.of(wrapper.getPropertyDescriptors())
+        .map(FeatureDescriptor::getName)
+        .filter(name -> wrapper.getPropertyValue(name) == null)
+        .toArray(String[]::new);
   }
 }

@@ -1,0 +1,930 @@
+openapi: 3.0.3
+info:
+  title: EventHub
+  description: "\"EventHub\" is a platform for organizing and managing events. The application allows users to create, 
+  view and participate in various events such as conferences, webinars, mitaps and other events."
+  version: 1.0.0
+tags:
+  - name: CommentController
+    description: Provides functionality for thr Comment entity
+  - name: EventController
+    description: Provides functionality for thr Event entity
+  - name: ParticipantController
+    description: Provides functionality for the Participant entity
+  - name: UserController
+    description: Provides functionality for the User entity
+paths:
+  /comment:
+    post:
+      tags:
+        - CommentController
+      summary: "Create a new Comment"
+      description: "Creates a new Comment and returns CommentDto if successful, provided that all fields 
+      pass validation."
+      operationId: "addComment"
+      requestBody:
+        description: "You need to fill in all fields except commentId, as it is set automatically on the 
+        database side."
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommentDto"
+        required: true
+      responses:
+        "200":
+          description: "OK - returned if data was successfully written to the database."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommentDto"
+        "404":
+          description: "NOT_FOUND - returned if there is no User with the specified userId or Event with the 
+          specified eventId in the database."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse404"
+        "406":
+          description: "NOT_ACCEPTABLE - there are several scenarios for occurrence: the value of the rating field is 
+          outside the range from 0 to 10, there is at least one empty field or with a null value."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse406"
+    put:
+      tags:
+        - CommentController
+      summary: "Update a Comment"
+      description: "Validates incoming data, if everything is in order, then performs an update."
+      operationId: "updateComment"
+      requestBody:
+        description: "For id, specify the identifier of the object being updated in the database. Fill in all other 
+         fields, because if a field in the request body is null, after updating in the source object this field will be 
+          reset and the information will be erased."
+        content:
+          application/json:
+            schema:
+              example: {
+                "commentId": 5,
+                "eventId": 3,
+                "userId": 2,
+                "comment": "Great event!",
+                "rating": 9,
+                "creationTime": "2024-03-21T10:15:30",
+                "updateTime": "2024-03-23T10:15:30"
+              }
+        required: true
+      responses:
+        "200":
+          description: "OK - returned if data was successfully updated row in database."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommentDto"
+        "404":
+          description: "NOT_FOUND - returned if there is no Comment with the specified commentId, or User with the 
+          specified userId, or Event with the specified eventId in the database."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse404"
+        "406":
+          description: "NOT_ACCEPTABLE - There are several scenarios where the rating field value is outside the 
+          range of 0 to 10, there is at least one empty field or with a null value."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse406"
+    patch:
+      tags:
+        - CommentController
+      summary: "Patch a Comment"
+      description: "Validates incoming data, if everything is in order, then performs patching."
+      operationId: "patchComment"
+      requestBody:
+        description: "For id, specify the identifier of the object being updated in the database. For patching, you can 
+        specify any combination and any number of fields to update the entity. Fields that do not exist or whose value 
+        is null are not taken into account during the update."
+        content:
+          application/json:
+            schema:
+              example: {
+                "commentId": 5,
+                "comment": "Great event!",
+                "rating": null,
+                "updateTime": null
+              }
+      responses:
+        "200":
+          description: "OK - returned if data was successfully patched row in database."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommentDto"
+        "404":
+          description: "NOT_FOUND - returned if there is no Comment with the specified commentId, or User with the 
+          specified userId, or Event with the specified eventId in the database."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse404"
+        "406":
+          description: "NOT_ACCEPTABLE - There are several scenarios where the rating field value is outside the 
+          range of 0 to 10."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse406"
+  /comment/{commentId}:
+    get:
+      tags:
+        - CommentController
+      summary: "Get a Comment by ID"
+      description: "Returns the searched Comment provided it exists in the database."
+      operationId: "getComment"
+      parameters:
+        - name: "commentId"
+          description: "This is the ID of the object in the database that matches the searched comment."
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+            example: "5"
+      responses:
+        "200":
+          description: "OK - returned if the search for an object in the database is successful."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommentDto"
+        "404":
+          description: "NOT_FOUND - returned if a record with the required identifier is not found in the database."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse404"
+    delete:
+      tags:
+        - CommentController
+      summary: "Delete a Comment by ID"
+      description: "Checks the Comment for existence; if it exists, deletes it from the database."
+      operationId: "deleteComment"
+      parameters:
+        - name: "commentId"
+          description: "This is the identifier of the entity in the database that corresponds 
+          to the Comment being deleted."
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+            example: "1"
+      responses:
+        "200":
+          description: "OK - returned if data was successfully deleted from the database."
+          content:
+            text/html:
+              example: "Comment with id 1 deleted."
+        "404":
+          description: "NOT_FOUND - returned if there is no Comment with the specified commentId, or User with the 
+          specified userId, or Event with the specified eventId in the database."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse404"
+  /comment/all:
+    get:
+      tags:
+        - CommentController
+      summary: "Get all Comment entities"
+      description: "Returns a list of Comment entities."
+      operationId: "getComments"
+      responses:
+        "200":
+          description: "OK - always returns a list of entities of the Comment type; if there is no data in the database 
+          that represents a Comment, then it displays empty square brackets that symbolize an empty list."
+          content:
+            text/html:
+              example: [
+                { "commentId": 1,"eventId": 1,"userId": 1,"comment": "Great event!","rating": 8,
+                  "creationTime": "2024-02-20T12:00:00","updateTime": null },
+                { "commentId": 2,"eventId": 1,"userId": 2,"comment": "I enjoyed this event.","rating": 7,
+                  "creationTime": "2024-02-20T12:30:00","updateTime": null },
+                { "commentId": 3,"eventId": 2,"userId": 1,"comment": "Interesting event.","rating": 9,
+                  "creationTime": "2024-03-15T17:00:00","updateTime": null }
+              ]
+  /event:
+    post:
+      tags:
+        - EventController
+      summary: "Create a new Event"
+      description: "Creates a new Event and returns UserDto if successful. Before creation, all unique fields are
+            checked and incoming data is validated."
+      operationId: "addEvent"
+      requestBody:
+        description: "You need to fill in all fields except eventId, as it is set automatically on the
+              database side."
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EventDto"
+        required: true
+      responses:
+        "200":
+          description: "OK - returned if data was successfully written to the database."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventDto"
+        "406":
+          description: "NOT_ACCEPTABLE - provided that the title field are not unique. Also, if at least one of the 
+          fields is empty."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse406"
+    put:
+      tags:
+        - EventController
+      summary: "Update a Event"
+      description: "Validates incoming data, if everything is in order, then performs an update."
+      operationId: "updateEvent"
+      requestBody:
+        description: "For id, specify the identifier of the object being updated in the database. Fill in all other 
+         fields, because if a field in the request body is null, after updating in the source object this field will be 
+          reset and the information will be erased."
+        content:
+          application/json:
+            schema:
+              example: {
+                "eventId": 11,
+                "title": "Spring Festival",
+                "eventDate": "2024-03-21T10:15:30",
+                "description": "A festival to celebrate the arrival of spring",
+                "location": "Minsk, Belarus"
+              }
+        required: true
+      responses:
+        "200":
+          description: "OK - returned if data was successfully updated row in database."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventDto"
+        "404":
+          description: "NOT_FOUND - returned if there is no Event with the specified userId in the database."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse404"
+        "406":
+          description: "NOT_ACCEPTABLE - provided that the title field are not unique. Also, if at least one of the 
+          fields is empty."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse406"
+    patch:
+      tags:
+        - EventController
+      summary: "Update a Event"
+      description: "Validates incoming data, if everything is in order, then performs an update."
+      operationId: "patchEvent"
+      requestBody:
+        description: "For id, specify the identifier of the object being updated in the database. Fill in all other 
+         fields, because if a field in the request body is null, after updating in the source object this field will be 
+          reset and the information will be erased."
+        content:
+          application/json:
+            schema:
+              example: {
+                "eventId": 11,
+                "title": "Spring Festival",
+                "eventDate": "2024-03-21T10:15:30",
+                "description": "A festival to celebrate the arrival of spring",
+                "location": "Minsk, Belarus"
+              }
+        required: true
+      responses:
+        "200":
+          description: "OK - returned if data was successfully updated row in database."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDto"
+        "404":
+          description: "NOT_FOUND - returned if there is no Event with the specified userId in the database."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse404"
+        "406":
+          description: "NOT_ACCEPTABLE - provided that the title field are not unique. Also, if at least one of the 
+          fields is empty."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse406"
+  /event/{eventId}:
+    get:
+      tags:
+        - EventController
+      summary: "Get a Event by ID"
+      description: "Returns the searched Event provided it exists in the database."
+      operationId: "getEvent"
+      parameters:
+        - name: "eventId"
+          description: "This is the ID of the object in the database that matches the searched comment."
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+            example: "4"
+      responses:
+        "200":
+          description: "OK - returned if the search for an object in the database is successful."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDto"
+        "404":
+          description: "NOT_FOUND - returned if a record with the required identifier is not found in the database."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse404"
+    delete:
+      tags:
+        - EventController
+      summary: "Delete a Event by ID"
+      description: "Checks the Event for existence; if it exists, deletes it from the database."
+      operationId: "deleteEvent"
+      parameters:
+        - name: "eventId"
+          in: path
+          required: true
+          description: "This is the identifier of the entity in the database that corresponds 
+          to the Event being deleted."
+          schema:
+            type: "integer"
+            format: "int64"
+            example: "1"
+      responses:
+        "200":
+          description: "OK - returned if data was successfully deleted from the database."
+          content:
+            text/html:
+              example: "Event with id 1 deleted."
+        "404":
+          description: "NOT_FOUND - returned if a record with the required identifier is not found in the database."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse404"
+  /event/all:
+    get:
+      tags:
+        - EventController
+      summary: "Get all Event entities"
+      description: "Returns a list of events."
+      operationId: "getEvents"
+      responses:
+        "200":
+          description: "OK - always returns a list of entities of the Event type; if there is no data in the database 
+          that represents a Event, then it displays empty square brackets that symbolize an empty list."
+          content:
+            text/html:
+              example: [
+                { "eventId": 1,"title": "Event1","description": "This is event 1",
+                  "eventDate": "2024-02-20T10:00:00","location": "Location1" },
+                { "eventId": 2,"title": "Event2","description": "This is event 2",
+                  "eventDate": "2024-03-15T15:00:00","location": "Location2" }
+              ]
+  /participant:
+    post:
+      tags:
+        - ParticipantController
+      summary: "Create a new Participant"
+      description: "Creates a new Participant and returns ParticipantDto if successful, provided that all fields 
+      pass validation."
+      operationId: "addParticipant"
+      requestBody:
+        description: "You need to fill in all fields except participantId, as it is set automatically on the 
+        database side."
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ParticipantDto"
+        required: true
+      responses:
+        "200":
+          description: "OK - returned if data was successfully written to the database."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ParticipantDto"
+        "404":
+          description: "NOT_FOUND - returned if there is no User with the specified userId or Event with the 
+          specified eventId in the database."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse404"
+        "406":
+          description: "NOT_ACCEPTABLE - this status is obtained if an attempt is made to add a non-unique Participant."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse406"
+    put:
+      tags:
+        - ParticipantController
+      summary: "Update a Participant"
+      description: "Validates incoming data, if everything is in order, then performs an update."
+      operationId: "updateParticipant"
+      requestBody:
+        description: "For id, specify the identifier of the object being updated in the database. Fill in all other 
+         fields, because if a field in the request body is null, after updating in the source object this field will be 
+          reset and the information will be erased."
+        content:
+          application/json:
+            schema:
+              example: {
+                "participantId": 5,
+                "eventId": 3,
+                "userId": 2,
+                "status": "ATTENDED",
+              }
+        required: true
+      responses:
+        "200":
+          description: "OK - returned if data was successfully updated row in database."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ParticipantDto"
+        "404":
+          description: "NOT_FOUND - returned if there is no Participant with the specified participantId, or User with the 
+          specified userId, or Event with the specified eventId in the database."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse404"
+        "406":
+          description: "NOT_ACCEPTABLE - this status is obtained if an attempt is made to add a non-unique Participant."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse406"
+    patch:
+      tags:
+        - ParticipantController
+      summary: "Patch a Participant"
+      description: "Validates incoming data, if everything is in order, then performs patching."
+      operationId: "patchParticipant"
+      requestBody:
+        description: "For id, specify the identifier of the object being updated in the database. For patching, you can 
+        specify any combination and any number of fields to update the entity. Fields that do not exist or whose value 
+        is null are not taken into account during the update."
+        content:
+          application/json:
+            schema:
+              example: {
+                "participantId": 5,
+                "eventId": 3,
+                "userId": 2,
+                "status": "MISSED",
+              }
+      responses:
+        "200":
+          description: "OK - returned if data was successfully patched row in database."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ParticipantDto"
+        "404":
+          description: "NOT_FOUND - returned if there is no Participant with the specified participantId, or User with the 
+          specified userId, or Event with the specified eventId in the database."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse404"
+        "406":
+          description: "NOT_ACCEPTABLE - this status is obtained if an attempt is made to add a non-unique Participant."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse406"
+  /participant/{participantId}:
+    get:
+      tags:
+        - ParticipantController
+      summary: "Get a Participant by ID"
+      description: "Returns the searched Participant provided it exists in the database."
+      operationId: "getParticipant"
+      parameters:
+        - name: "participantId"
+          description: "This is the ID of the object in the database that matches the searched Participant."
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+            example: "5"
+      responses:
+        "200":
+          description: "OK - returned if the search for an object in the database is successful."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ParticipantDto"
+        "404":
+          description: "NOT_FOUND - returned if a record with the required identifier is not found in the database."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse404"
+    delete:
+      tags:
+        - ParticipantController
+      summary: "Delete a Participant by ID"
+      description: "Checks the Participant for existence; if it exists, deletes it from the database."
+      operationId: "deleteParticipant"
+      parameters:
+        - name: "participantId"
+          description: "This is the identifier of the entity in the database that corresponds 
+          to the Participant being deleted."
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+            example: "1"
+      responses:
+        "200":
+          description: "OK - returned if data was successfully deleted from the database."
+          content:
+            text/html:
+              example: "Participant with id 1 deleted."
+        "404":
+          description: "NOT_FOUND - returned if there is no Participant with the specified participantId, or User with the 
+          specified userId, or Event with the specified eventId in the database."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse404"
+  /participant/all:
+    get:
+      tags:
+        - ParticipantController
+      summary: "Get all Participant entities"
+      description: "Returns a list of Participant entities."
+      operationId: "getParticipants"
+      responses:
+        "200":
+          description: "OK - always returns a list of entities of the Participant type; if there is no data in the database 
+          that represents a Participant, then it displays empty square brackets that symbolize an empty list."
+          content:
+            text/html:
+              example: [
+                {"participantId":1,"userId":1,"eventId":1,"status":"TRACKING"},
+                {"participantId":2,"userId":1, "eventId":2,"status":"TRACKING"}
+              ]
+  /user:
+    post:
+      tags:
+        - UserController
+      summary: "Create a new User"
+      description: "Creates a new User and returns UserDto if successful. Before creation, all unique fields are
+            checked and incoming data is validated."
+      operationId: "addUser"
+      requestBody:
+        description: "You need to fill in all fields except userId, as it is set automatically on the
+              database side."
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDto'
+        required: true
+      responses:
+        "200":
+          description: "OK - returned if data was successfully written to the database."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDto"
+        "406":
+          description: "NOT_ACCEPTABLE - provided that the userName and/or email fields are not unique. Also in case
+                the password consists of less than 8 characters or does not contain upper and lower case literals or does
+                not contain digits. In the situation when the e-mail format does not comply with the standard. Also, if at
+                least one of the fields is empty."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse406"
+    put:
+      tags:
+        - UserController
+      summary: "Update a User"
+      description: "Validates incoming data, if everything is in order, then performs an update."
+      operationId: "updateUser"
+      requestBody:
+        description: "For id, specify the identifier of the object being updated in the database. Fill in all other 
+         fields, because if a field in the request body is null, after updating in the source object this field will be 
+          reset and the information will be erased."
+        content:
+          application/json:
+            schema:
+              example: {
+                "userId": 4,
+                "userName": "Alexander Mikhniuk",
+                "email": "alexmix@mail.ru",
+                "password": "12345aA%"
+              }
+        required: true
+      responses:
+        "200":
+          description: "OK - returned if data was successfully updated row in database."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDto"
+        "404":
+          description: "NOT_FOUND - returned if there is no User with the specified userId in the database."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse404"
+        "406":
+          description: "NOT_ACCEPTABLE - provided that the userName and/or email fields are not unique. Also in case
+                the password consists of less than 8 characters or does not contain upper and lower case literals or does
+                not contain digits. In the situation when the e-mail format does not comply with the standard. Also, if at
+                least one of the fields is empty."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse406"
+    patch:
+      tags:
+        - UserController
+      summary: "Patch a User"
+      description: "Validates incoming data, if everything is in order, then performs an patch."
+      operationId: "patchUser"
+      requestBody:
+        description: "For the id parameter, specify the identifier of the object for which the patch is being created 
+        in the database. Fill in only those fields that are subject to patching. Take into account all validation 
+        criteria, namely password and e-mail format, as well as their uniqueness factor."
+        content:
+          application/json:
+            schema:
+              example: {
+                "userId": 4,
+                "userName": null,
+                "password": "12345aA%"
+              }
+      responses:
+        "200":
+          description: "OK - returned if data was successfully updated row in database."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDto"
+        "404":
+          description: "NOT_FOUND - returned if there is no User with the specified userId in the database."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse404"
+        "406":
+          description: "NOT_ACCEPTABLE - provided that the userName and/or email fields are not unique. Also in case
+                the password consists of less than 8 characters or does not contain upper and lower case literals or does
+                not contain digits. In the situation when the e-mail format does not comply with the standard. Also, if at
+                least one of the fields is empty."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse406"
+  /user/{userId}:
+    get:
+      tags:
+        - UserController
+      summary: "Get a User by ID"
+      description: "Returns the searched User provided it exists in the database."
+      operationId: "getUser"
+      parameters:
+        - name: "userId"
+          description: "This is the ID of the object in the database that matches the searched comment."
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+            example: "4"
+      responses:
+        "200":
+          description: "OK - returned if the search for an object in the database is successful."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDto"
+        "404":
+          description: "NOT_FOUND - returned if a record with the required identifier is not found in the database."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse404"
+    delete:
+      tags:
+        - UserController
+      summary: "Delete a User by ID"
+      description: "Checks the User for existence; if it exists, deletes it from the database."
+      operationId: "deleteUser"
+      parameters:
+        - name: "userId"
+          in: path
+          required: true
+          description: "This is the identifier of the entity in the database that corresponds 
+          to the User being deleted."
+          schema:
+            type: "integer"
+            format: "int64"
+            example: "1"
+      responses:
+        "200":
+          description: "OK - returned if data was successfully deleted from the database."
+          content:
+            text/html:
+              example: "User with id 1 deleted."
+        "404":
+          description: "NOT_FOUND - returned if a record with the required identifier is not found in the database."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse404"
+  /user/all:
+    get:
+      tags:
+        - UserController
+      summary: "Get all users"
+      description: "Returns a list of users."
+      operationId: "getUsers"
+      responses:
+        "200":
+          description: "OK - always returns a list of entities of the User type; if there is no data in the database 
+          that represents a User, then it displays empty square brackets that symbolize an empty list."
+          content:
+            text/html:
+              example: [
+                { "userId": 1,"userName": "User1","email": "user1@example.com","password": "password1" },
+                { "userId": 3,"userName": "User3","email": "user3@example.com","password": "password3" }
+              ]
+components:
+  schemas:
+    CommentDto:
+      type: object
+      description: Details about the CommentDto
+      properties:
+        commentId:
+          type: integer
+          format: int64
+          description: The unique ID of the Comment
+          example: 5
+          readOnly: true
+        eventId:
+          type: integer
+          format: int64
+          description: The Event id associated with the Comment
+          example: 3
+        userId:
+          type: integer
+          format: int64
+          description: The User id who posted the Comment
+          example: 2
+        comment:
+          type: string
+          description: The text content of the Comment
+          example: Great event!
+        rating:
+          type: integer
+          format: int32
+          description: The rating given for Comment by the User
+          example: 9
+          minimum: 0
+          maximum: 10
+        creationTime:
+          type: string
+          format: date-time
+          description: The date when the Comment was posted
+          example: "2024-03-21T10:15:30"
+        updateTime:
+          type: string
+          format: date-time
+          description: Time when the Comment was last edited.
+          example: "2024-03-23T10:15:30"
+    EventDto:
+      type: object
+      description: Details about the EventDto
+      properties:
+        eventId:
+          type: integer
+          readOnly: true
+          description: The unique ID of the Event
+          example: 11
+        title:
+          type: string
+          description: The title of the Event
+          example: Spring Festival
+        description:
+          type: string
+          description: The description of the Event
+          example: A festival to celebrate the arrival of spring
+        eventDate:
+          type: string
+          format: date-time
+          description: The date of the Event
+          example: '2024-03-21T10:15:30'
+        location:
+          type: string
+          description: The location of the Event
+          example: Minsk, Belarus
+    ParticipantDto:
+      type: object
+      properties:
+        participantId:
+          type: integer
+          format: int64
+          description: The unique ID of the Participant
+          readOnly: true
+          example: 12
+        user:
+          type: integer
+          format: int64
+          description: The userId of the User associated with the Participant entity.
+          example: 4
+        event:
+          type: integer
+          format: int64
+          description: The eventId of the Event associated with the Participant entity.
+          example: 4
+        status:
+          type: string
+          enum: [ TRACKING,
+                  REGISTERED,
+                  MISSED,
+                  ATTENDED ]
+          description: Participant visit status
+          example: TRACKING
+      required:
+        - user
+        - event
+    UserDto:
+      type: object
+      description: Details about the UserDto
+      properties:
+        userId:
+          type: integer
+          readOnly: true
+          description: The unique ID of the User
+          example: 4
+        userName:
+          type: string
+          description: The unique username of the User
+          example: Alexander Mikhniuk
+        email:
+          type: string
+          description: The unique email of the User
+          example: alexmix@mail.ru
+        password:
+          type: string
+          description: The password of the User
+          example: 12345aA%
+    ErrorResponse406:
+      type: object
+      description: NOT_ACCEPTABLE error code.
+      properties:
+        id:
+          type: string
+          readOnly: true
+          description: Unique error identifier.
+          example: "4fbdaabb-be8d-4478-84d6-1d9e27f36b2e"
+        message:
+          type: string
+          readOnly: true
+          description: Explanation of the error
+          example: "Some data field appeared empty."
+    ErrorResponse404:
+      type: object
+      description: NOT_FOUND error code.
+      properties:
+        id:
+          type: string
+          readOnly: true
+          description: Unique error identifier.
+          example: "4fbdaabb-be8d-4478-84d6-1d9e27f36b2e"
+        message:
+          type: string
+          readOnly: true
+          description: Explanation of the error
+          example: "The data you requested was not found."

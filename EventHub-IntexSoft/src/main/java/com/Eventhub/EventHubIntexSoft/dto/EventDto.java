@@ -1,15 +1,20 @@
-package com.Eventhub.EventHubIntexSoft.DTO;
+package com.Eventhub.EventHubIntexSoft.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
+@Schema(description = "Details about the EventDto")
 public class EventDto {
+
   private Long eventId;
+
   private String title;
+
   private String description;
+
   private LocalDateTime eventDate;
+
   private String location;
 }

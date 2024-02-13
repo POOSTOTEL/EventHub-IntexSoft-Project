@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="Add new update_date column to the comments table" author="poostotel">
+        <addColumn tableName="comments">
+            <column name="update_date" type="timestamp" remarks="Time of last comment update.">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="Add new participant_status column to the participants table" author="poostotel">
+        <addColumn tableName="participants">
+            <column name="participant_status" type="integer"
+                    remarks="Event attendance Status id.
+                    Each ID has its own status:
+                    0 - TRACKING,
+                    1 - REGISTERED,
+                    2 - MISSED,
+                    3 - ATTENDED.">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

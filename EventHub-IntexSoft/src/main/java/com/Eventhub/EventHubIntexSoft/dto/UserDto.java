@@ -1,13 +1,17 @@
-package com.Eventhub.EventHubIntexSoft.DTO;
+package com.Eventhub.EventHubIntexSoft.dto;
 
-import lombok.AllArgsConstructor;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
+@Schema(description = "Details about the UserDto")
 public class UserDto {
+
   private Long userId;
+
   private String userName;
+
   private String email;
+
   private String password;
 }

@@ -1,13 +1,10 @@
 package com.Eventhub.EventHubIntexSoft.entity;
 
+import com.Eventhub.EventHubIntexSoft.enumiration.ParticipantStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "participants")
 public class Participant {
@@ -20,11 +17,15 @@ public class Participant {
   @Column(name = "participant_id")
   private Long participantId;
 
-  @ManyToOne(cascade = CascadeType.REMOVE)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
-  @ManyToOne(cascade = CascadeType.REMOVE)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "event_id", nullable = false)
   private Event event;
+
+  @Enumerated(EnumType.ORDINAL)
+  @Column(name = "participant_status")
+  private ParticipantStatus status;
 }

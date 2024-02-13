@@ -1,5 +1,6 @@
 package com.Eventhub.EventHubIntexSoft.entity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,13 +9,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "events")
 public class Event {
@@ -24,7 +21,7 @@ public class Event {
   @Column(name = "event_id")
   private Long eventId;
 
-  @Column(name = "title", nullable = false)
+  @Column(name = "title", nullable = false, unique = true)
   private String title;
 
   @Column(name = "description")

@@ -1,8 +1,11 @@
 package com.Eventhub.EventHubIntexSoft.controller;
 
-import com.Eventhub.EventHubIntexSoft.DTO.EventDto;
-import com.Eventhub.EventHubIntexSoft.entity.Event;
-import com.Eventhub.EventHubIntexSoft.service.Impl.EventServiceImpl;
+import com.Eventhub.EventHubIntexSoft.dto.EventDto;
+import com.Eventhub.EventHubIntexSoft.exception.EmptyDtoFieldException;
+import com.Eventhub.EventHubIntexSoft.exception.NonUniqValueException;
+import com.Eventhub.EventHubIntexSoft.exception.NotFoundException;
+import com.Eventhub.EventHubIntexSoft.service.EventService;
+import com.Eventhub.EventHubIntexSoft.validator.EventValidator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,42 +16,48 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/event")
 public class EventController {
-  private final EventServiceImpl eventServiceImpl;
+
+  private final EventService eventService;
+  private final EventValidator eventValidator;
 
   @GetMapping("/all")
   public ResponseEntity<List<EventDto>> allEvents() {
-    return ResponseEntity.ok(eventServiceImpl.getAllEvents());
+    return ResponseEntity.ok(eventService.getAllEvents());
   }
 
   @PostMapping
-  public ResponseEntity<EventDto> createEvent(@RequestBody Event event) {
-    return eventServiceImpl
-        .createEvent(event)
-        .map(eventDto -> new ResponseEntity<>(eventDto, HttpStatus.OK))
-        .orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
+  public ResponseEntity<EventDto> createEvent(@RequestBody EventDto eventDto)
+      throws EmptyDtoFieldException, NonUniqValueException {
+    eventValidator.validateEventDtoSave(eventDto);
+    return new ResponseEntity<>(eventService.createEvent(eventDto), HttpStatus.OK);
   }
 
-  @GetMapping("/{id}")
-  public ResponseEntity<EventDto> getEventById(@PathVariable("id") Long eventId) {
-    return eventServiceImpl
-        .getEventByEventId(eventId)
-        .map(eventDto -> new ResponseEntity<>(eventDto, HttpStatus.OK))
-        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+  @GetMapping("/{eventId}")
+  public ResponseEntity<EventDto> getEventByEventId(@PathVariable("eventId") Long eventId)
+      throws NotFoundException {
+    eventValidator.validateEventExistingByEventId(eventId);
+    return new ResponseEntity<>(eventService.getEventByEventId(eventId), HttpStatus.OK);
   }
 
   @PutMapping
-  public ResponseEntity<EventDto> updateEvent(@RequestBody EventDto eventDto) {
-    return eventServiceImpl
-        .updateEvent(eventDto)
-        .map(
-            eventDataTransferObject -> new ResponseEntity<>(eventDataTransferObject, HttpStatus.OK))
-        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+  public ResponseEntity<EventDto> updateEvent(@RequestBody EventDto eventDto)
+      throws EmptyDtoFieldException, NotFoundException, NonUniqValueException {
+    eventValidator.validateEventDtoUpdate(eventDto);
+    return new ResponseEntity<>(eventService.updateEvent(eventDto), HttpStatus.OK);
   }
 
-  @DeleteMapping("/{id}")
-  public ResponseEntity<String> deleteEvent(@PathVariable("id") Long eventId) {
-    return eventServiceImpl.deleteEventByEventId(eventId)
-        ? ResponseEntity.ok("Event with id " + eventId + " deleted.")
-        : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+  @PatchMapping
+  public ResponseEntity<EventDto> patchEvent(@RequestBody EventDto eventDto)
+      throws EmptyDtoFieldException, NotFoundException, NonUniqValueException {
+    eventValidator.validateEventDtoPatch(eventDto);
+    return new ResponseEntity<>(eventService.patchEvent(eventDto), HttpStatus.OK);
+  }
+
+  @DeleteMapping("/{eventId}")
+  public ResponseEntity<String> deleteEventByEventId(@PathVariable("eventId") Long eventId)
+      throws NotFoundException {
+    eventValidator.validateEventExistingByEventId(eventId);
+    eventService.deleteEventByEventId(eventId);
+    return ResponseEntity.ok("Event with id " + eventId + " deleted.");
   }
 }
