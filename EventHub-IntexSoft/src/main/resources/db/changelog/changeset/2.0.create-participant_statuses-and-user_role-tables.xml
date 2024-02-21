@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="Creating table participant_statuses" author="poostotel">
+        <createTable tableName="participant_statuses" remarks="This table contains all event attendance status options.">
+            <column name="status_id" type="serial" remarks="Serial numbers of participant statuses in the database.">
+                <constraints primaryKey="true" primaryKeyName="status_id"/>
+            </column>
+            <column name="status" type="varchar(50)" remarks="Participant status."/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="Linking a column of status identifiers to statuses" author="poostotel">
+        <sql>
+            ALTER TABLE participants ADD FOREIGN KEY (participant_status) REFERENCES participant_statuses(status_id);
+        </sql>
+    </changeSet>
+
+    <changeSet id="Creating table user_roles" author="poostotel">
+        <createTable tableName="user_roles" remarks="The table stores all the roles available to the user in the application.">
+            <column name="role_id" type="serial" remarks="Serial numbers of user role in the database.">
+                <constraints primaryKey="true" primaryKeyName="role_id"/>
+            </column>
+            <column name="role" type="varchar(50)" remarks="User role."/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="Linking a column of role identifiers to roles" author="poostotel">
+        <sql>
+            ALTER TABLE users ADD FOREIGN KEY (user_role) REFERENCES user_roles(role_id);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

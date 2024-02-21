@@ -2,7 +2,7 @@ package com.Eventhub.EventHubIntexSoft.validator;
 
 import com.Eventhub.EventHubIntexSoft.dto.ParticipantDto;
 import com.Eventhub.EventHubIntexSoft.entity.Participant;
-import com.Eventhub.EventHubIntexSoft.enumiration.ParticipantStatus;
+import com.Eventhub.EventHubIntexSoft.entity.ParticipantStatus;
 import com.Eventhub.EventHubIntexSoft.exception.EmptyDtoFieldException;
 import com.Eventhub.EventHubIntexSoft.exception.FormatException;
 import com.Eventhub.EventHubIntexSoft.exception.NonUniqValueException;
@@ -95,12 +95,12 @@ public class ParticipantValidator extends FieldValidator {
         Optional.ofNullable(participantRepository.findParticipantByParticipantId(participantId));
     if (participant.isPresent()) {
       ParticipantStatus statusOfExistParticipant = participant.get().getStatus();
-      if (statusOfExistParticipant.ordinal() > 1
-          || !status.equals(ParticipantStatus.MISSED.name())) {
+      if (statusOfExistParticipant.getStatusId() > 1
+          || !status.equals("MISSED")) {
         throw new FormatException();
       }
     } else {
-      if (!status.equals(ParticipantStatus.TRACKING.name())) {
+      if (!status.equals("TRACKING")) {
         throw new FormatException();
       }
     }

@@ -3,8 +3,9 @@ package com.Eventhub.EventHubIntexSoft.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
-@Schema(description = "Details about the UserDto")
 public class UserDto {
 
   private Long userId;
@@ -14,4 +15,6 @@ public class UserDto {
   private String email;
 
   private String password;
+
+  private List<String> roles;
 }

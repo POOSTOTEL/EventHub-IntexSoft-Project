@@ -1,6 +1,5 @@
 package com.Eventhub.EventHubIntexSoft.entity;
 
-import com.Eventhub.EventHubIntexSoft.enumiration.ParticipantStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -25,7 +24,7 @@ public class Participant {
   @JoinColumn(name = "event_id", nullable = false)
   private Event event;
 
-  @Enumerated(EnumType.ORDINAL)
-  @Column(name = "participant_status")
+  @OneToOne
+  @JoinColumn(name = "participant_status", referencedColumnName = "status_id")
   private ParticipantStatus status;
 }

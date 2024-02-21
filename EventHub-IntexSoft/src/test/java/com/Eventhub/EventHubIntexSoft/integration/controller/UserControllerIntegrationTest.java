@@ -28,7 +28,7 @@ import org.springframework.http.HttpStatus;
 public class UserControllerIntegrationTest {
 
   @LocalServerPort protected Integer port;
-
+  //todo обработать всё что связано с ролями
   @BeforeEach
   void setUp() {
     RestAssured.baseURI = "http://localhost:" + port;

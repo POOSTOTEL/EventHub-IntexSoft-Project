@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import lombok.Data;
 
 @Data
-@Schema(description = "Details about the CommentDto")
 public class CommentDto {
 
   private Long commentId;

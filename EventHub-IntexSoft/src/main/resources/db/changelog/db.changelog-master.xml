@@ -4,8 +4,12 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
     <include file="changeset/1.0.create-initial-database.xml" relativeToChangelogFile="true"/>
-    <include file="changeset/1.1.insert-initial-data.xml" relativeToChangelogFile="true"/>
+<!-- DEPRECATED <include file="changeset/1.1.insert-initial-data.xml" relativeToChangelogFile="true"/>-->
     <include file="changeset/1.2.add-cascades-to-foreign-keys.xml" relativeToChangelogFile="true"/>
-    <include file="changeset/1.3.add-update-time-and-event-status.xml" relativeToChangelogFile="true"/>
+    <include file="changeset/1.3.add-update-time-and-participant-status.xml" relativeToChangelogFile="true"/>
     <include file="changeset/1.4.update-initial-data.xml" relativeToChangelogFile="true"/>
+    <include file="changeset/1.5.add-user-role-column.xml" relativeToChangelogFile="true"/>
+    <include file="changeset/2.0.create-participant_statuses-and-user_role-tables.xml" relativeToChangelogFile="true"/>
+    <include file="changeset/2.1.change-column-type-for-password.xml" relativeToChangelogFile="true"/>
+    <include file="changeset/2.2.insert-roles-and-statuses.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

@@ -94,6 +94,8 @@ public class UserValidator extends FieldValidator {
     }
   }
 
+  //todo дописать проверку ролей на корректность
+
   public void validateCorrectPasswordFormat(String password) throws FormatException {
     if (!passwordPattern.matcher(password).find()) {
       throw new FormatException();

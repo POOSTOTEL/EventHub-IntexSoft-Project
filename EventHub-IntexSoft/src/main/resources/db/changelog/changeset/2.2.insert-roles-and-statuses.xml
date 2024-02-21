@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="Setting participant statuses in the database" author="poostotel">
+        <insert tableName="participant_statuses">
+            <column name="status_id" valueNumeric="0"/>
+            <column name="status" value="TRACKING"/>
+        </insert>
+        <insert tableName="participant_statuses">
+            <column name="status_id" valueNumeric="1"/>
+            <column name="status" value="REGISTERED"/>
+        </insert>
+        <insert tableName="participant_statuses">
+            <column name="status_id" valueNumeric="2"/>
+            <column name="status" value="MISSED"/>
+        </insert>
+        <insert tableName="participant_statuses">
+            <column name="status_id" valueNumeric="3"/>
+            <column name="status" value="ATTENDED"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="Setting user roles in the database" author="poostotel">
+        <insert tableName="user_roles">
+            <column name="role_id" valueNumeric="0"/>
+            <column name="role" value="USER"/>
+        </insert>
+        <insert tableName="user_roles">
+            <column name="role_id" valueNumeric="1"/>
+            <column name="role" value="ADMIN"/>
+        </insert>
+    </changeSet>
+
+
+</databaseChangeLog>

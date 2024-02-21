@@ -20,29 +20,30 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
   private final UserRepository userRepository;
+  private final UserMapper userMapper;
 
   public List<UserDto> getAllUsers() {
-    return UserMapper.instance.toDtoList(userRepository.findAll());
+    return userMapper.toDtoList(userRepository.findAll());
   }
 
   public UserDto createUser(UserDto userDto) {
-    return UserMapper.instance.toUserDto(userRepository.save(UserMapper.instance.toUser(userDto)));
+    return userMapper.toUserDto(userRepository.save(userMapper.toUser(userDto)));
   }
 
   public UserDto getUserByUserId(Long userId) {
-    return UserMapper.instance.toUserDto(userRepository.findUserByUserId(userId));
+    return userMapper.toUserDto(userRepository.findUserByUserId(userId));
   }
 
   public UserDto updateUser(UserDto userDto) {
     User user = userRepository.findUserByUserId(userDto.getUserId());
     BeanUtils.copyProperties(userDto, user, "userId");
-    return UserMapper.instance.toUserDto(userRepository.save(user));
+    return userMapper.toUserDto(userRepository.save(user));
   }
 
   public UserDto patchUser(UserDto userDto) {
     User user = userRepository.findUserByUserId(userDto.getUserId());
     BeanUtils.copyProperties(userDto, user, getNullProperties(userDto));
-    return UserMapper.instance.toUserDto(userRepository.save(user));
+    return userMapper.toUserDto(userRepository.save(user));
   }
 
   public User findUserByUserId(Long userId) {

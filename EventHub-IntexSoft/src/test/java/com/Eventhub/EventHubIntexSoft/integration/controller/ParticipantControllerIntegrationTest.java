@@ -27,7 +27,7 @@ import org.springframework.http.HttpStatus;
 @Import(TestDatabaseConfiguration.class)
 public class ParticipantControllerIntegrationTest {
   @LocalServerPort protected Integer port;
-
+  //todo обработать всё, что связано с status
   @BeforeEach
   void setUp() {
     RestAssured.baseURI = "http://localhost:" + port;

@@ -39,6 +39,8 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
     //DBRider
     implementation group: 'com.github.database-rider', name: 'rider-junit5', version: '1.25.0'
+    //PostgreSQL
+    runtimeOnly 'org.postgresql:postgresql'
     //TestContainers
     testImplementation 'org.testcontainers:testcontainers:1.19.3'
     testImplementation('org.testcontainers:postgresql')
@@ -51,8 +53,14 @@ dependencies {
     testImplementation 'io.rest-assured:json-schema-validator:5.4.0'
     testImplementation 'io.rest-assured:spring-mock-mvc:5.4.0'
     testImplementation 'io.rest-assured:spring-web-test-client:5.4.0'
-    //PostgreSQL
-    runtimeOnly 'org.postgresql:postgresql'
+    //SpringSecurity
+    implementation 'org.springframework.boot:spring-boot-starter-security:3.1.5'
+    //JWT
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'
+    //Jakarta XML
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
     //SpringTest
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     //Lombok
