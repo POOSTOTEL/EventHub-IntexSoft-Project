@@ -1,4 +1,4 @@
-package com.Eventhub.EventHubIntexSoft.security;
+package com.Eventhub.EventHubIntexSoft.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,9 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationResponse {
-    private String token;
+@Builder
+public class AuthRequestDto {
+    private String email;
+    private String password;
 }

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="Creating the refresh_tokens table" author="poostotel">
+        <createTable tableName="refresh_tokens" remarks="Table to store refresh tokens that allow the user to obtain access tokens.">
+            <column name="refresh_token_id" type="SERIAL" remarks="Serial numbers of roles in the database.">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="expiry_date" type="TIMESTAMP" remarks="The date and time the refresh token was deactivated.">
+                <constraints nullable="false"/>
+            </column>
+            <column name="token" type="VARCHAR(255)" remarks="UUID, which is the unique refresh token.">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT" remarks="ID of the user for whom the permissions refresh token was created.">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="fk_user"
+                                 baseTableName="refresh_tokens" baseColumnNames="user_id"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+    </changeSet>
+
+</databaseChangeLog>

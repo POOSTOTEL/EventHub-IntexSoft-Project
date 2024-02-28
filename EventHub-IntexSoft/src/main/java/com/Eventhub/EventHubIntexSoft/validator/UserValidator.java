@@ -68,6 +68,12 @@ public class UserValidator extends FieldValidator {
     }
   }
 
+  public void validateUserExistingByEmail (String email) throws NotFoundException {
+    if (Objects.isNull(userRepository.findUserByEmail(email))) {
+      throw new NotFoundException();
+    }
+  }
+
   public void validateUserExistingByUserId(Long userId) throws NotFoundException {
     if (Objects.isNull(userRepository.findUserByUserId(userId))) {
       throw new NotFoundException();
@@ -84,6 +90,12 @@ public class UserValidator extends FieldValidator {
   public void validateCorrectEmailFormat(String email) throws FormatException {
     if (!emailPattern.matcher(email).find()) {
       throw new FormatException();
+    }
+  }
+  public void validateUniqEmail(String email) throws NonUniqValueException {
+    User user = userRepository.findUserByEmail(email);
+    if (Objects.nonNull(user)) {
+      throw new NonUniqValueException();
     }
   }
 

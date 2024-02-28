@@ -50,6 +50,10 @@ public class UserServiceImpl implements UserService {
     return userRepository.findUserByUserId(userId);
   }
 
+  public User findUserByEmail(String email) {
+    return userRepository.findUserByEmail(email);
+  }
+
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public void deleteUserByUserId(Long userId) {
     userRepository.deleteUserByUserId(userId);

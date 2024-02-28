@@ -12,4 +12,6 @@
     <include file="changeset/2.0.create-participant_statuses-and-user_role-tables.xml" relativeToChangelogFile="true"/>
     <include file="changeset/2.1.change-column-type-for-password.xml" relativeToChangelogFile="true"/>
     <include file="changeset/2.2.insert-roles-and-statuses.xml" relativeToChangelogFile="true"/>
+    <include file="changeset/3.0.create-refresh-token-table.xml" relativeToChangelogFile="true"/>
+    <include file="changeset/3.1.create-link-table-for-roles.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

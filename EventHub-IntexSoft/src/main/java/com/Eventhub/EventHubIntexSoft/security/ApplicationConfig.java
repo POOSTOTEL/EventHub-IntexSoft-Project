@@ -1,7 +1,8 @@
 package com.Eventhub.EventHubIntexSoft.security;
 
-import com.Eventhub.EventHubIntexSoft.repository.UserRepository;
 import java.util.Optional;
+
+import com.Eventhub.EventHubIntexSoft.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,12 +18,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
-  private final UserRepository userRepository;
+  private final UserService userService;
 
   @Bean
   public UserDetailsService userDetailsService() {
     return email ->
-        Optional.ofNullable(userRepository.findUserByEmail(email))
+        Optional.ofNullable(userService.findUserByEmail(email))
             .orElseThrow(() -> new UsernameNotFoundException("User not found..."));
   }
 
