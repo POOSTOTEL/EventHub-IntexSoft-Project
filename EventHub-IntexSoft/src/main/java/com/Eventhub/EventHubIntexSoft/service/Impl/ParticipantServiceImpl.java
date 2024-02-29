@@ -6,12 +6,13 @@ import com.Eventhub.EventHubIntexSoft.mapper.ParticipantMapper;
 import com.Eventhub.EventHubIntexSoft.repository.ParticipantRepository;
 import com.Eventhub.EventHubIntexSoft.service.ParticipantService;
 import java.beans.FeatureDescriptor;
-import java.util.List;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,8 +23,10 @@ public class ParticipantServiceImpl implements ParticipantService {
   private final ParticipantRepository participantRepository;
   private final ParticipantMapper participantMapper;
 
-  public List<ParticipantDto> getAllParticipants() {
-    return participantMapper.toDtoList(participantRepository.findAll());
+  public Page<ParticipantDto> getAllParticipants(Integer offset, Integer limit) {
+    return participantRepository
+        .findAll(PageRequest.of(offset, limit))
+        .map(participant -> participantMapper.toParticipantDto(participant));
   }
 
   public ParticipantDto createParticipant(ParticipantDto participantDto) {

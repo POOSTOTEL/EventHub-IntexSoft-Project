@@ -6,8 +6,10 @@ import com.Eventhub.EventHubIntexSoft.exception.NonUniqValueException;
 import com.Eventhub.EventHubIntexSoft.exception.NotFoundException;
 import com.Eventhub.EventHubIntexSoft.service.EventService;
 import com.Eventhub.EventHubIntexSoft.validator.EventValidator;
-import java.util.List;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +23,10 @@ public class EventController {
   private final EventValidator eventValidator;
 
   @GetMapping("/all")
-  public ResponseEntity<List<EventDto>> allEvents() {
-    return ResponseEntity.ok(eventService.getAllEvents());
+  public ResponseEntity<Page<EventDto>> allEvents(
+      @RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
+      @RequestParam(value = "limit", defaultValue = "5") @Min(1) @Max(100) Integer limit) {
+    return ResponseEntity.ok(eventService.getAllEvents(offset, limit));
   }
 
   @PostMapping

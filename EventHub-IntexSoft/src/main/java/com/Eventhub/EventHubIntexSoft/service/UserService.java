@@ -2,10 +2,12 @@ package com.Eventhub.EventHubIntexSoft.service;
 
 import com.Eventhub.EventHubIntexSoft.dto.UserDto;
 import com.Eventhub.EventHubIntexSoft.entity.User;
+import org.springframework.data.domain.Page;
+
 import java.util.List;
 
 public interface UserService {
-  List<UserDto> getAllUsers();
+  Page<UserDto> getAllUsers(Integer offset, Integer limit);
 
   UserDto createUser(UserDto userDto);
 

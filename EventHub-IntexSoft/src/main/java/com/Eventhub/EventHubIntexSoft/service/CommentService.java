@@ -1,10 +1,10 @@
 package com.Eventhub.EventHubIntexSoft.service;
 
 import com.Eventhub.EventHubIntexSoft.dto.CommentDto;
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface CommentService {
-  List<CommentDto> getAllComments();
+  Page<CommentDto> getAllComments(Integer offset, Integer limit);
 
   CommentDto createComment(CommentDto commentDto);
 

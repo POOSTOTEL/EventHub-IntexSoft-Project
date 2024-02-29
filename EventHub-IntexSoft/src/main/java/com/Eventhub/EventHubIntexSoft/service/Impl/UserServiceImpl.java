@@ -6,12 +6,13 @@ import com.Eventhub.EventHubIntexSoft.mapper.UserMapper;
 import com.Eventhub.EventHubIntexSoft.repository.UserRepository;
 import com.Eventhub.EventHubIntexSoft.service.UserService;
 import java.beans.FeatureDescriptor;
-import java.util.List;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,8 +23,8 @@ public class UserServiceImpl implements UserService {
   private final UserRepository userRepository;
   private final UserMapper userMapper;
 
-  public List<UserDto> getAllUsers() {
-    return userMapper.toDtoList(userRepository.findAll());
+  public Page<UserDto> getAllUsers(Integer offset, Integer limit) {
+    return userRepository.findAll(PageRequest.of(offset, limit)).map(userMapper::toUserDto);
   }
 
   public UserDto createUser(UserDto userDto) {

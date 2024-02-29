@@ -1,13 +1,16 @@
 package com.Eventhub.EventHubIntexSoft.controller;
 
 import com.Eventhub.EventHubIntexSoft.dto.CommentDto;
+import com.Eventhub.EventHubIntexSoft.entity.Comment;
 import com.Eventhub.EventHubIntexSoft.exception.EmptyDtoFieldException;
 import com.Eventhub.EventHubIntexSoft.exception.FormatException;
 import com.Eventhub.EventHubIntexSoft.exception.NotFoundException;
 import com.Eventhub.EventHubIntexSoft.service.CommentService;
 import com.Eventhub.EventHubIntexSoft.validator.CommentValidator;
-import java.util.List;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +24,10 @@ public class CommentController {
   private final CommentValidator commentValidator;
 
   @GetMapping("/all")
-  public ResponseEntity<List<CommentDto>> allComments() {
-    return ResponseEntity.ok(commentService.getAllComments());
+  public ResponseEntity<Page<CommentDto>> allComments(
+      @RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
+      @RequestParam(value = "limit", defaultValue = "5") @Min(1) @Max(100) Integer limit) {
+    return ResponseEntity.ok(commentService.getAllComments(offset, limit));
   }
 
   @PostMapping
