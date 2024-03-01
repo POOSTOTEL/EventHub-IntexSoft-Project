@@ -25,8 +25,8 @@ public class ParticipantController {
 
   @GetMapping("/all")
   public ResponseEntity<Page<ParticipantDto>> allParticipants(
-      @RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
-      @RequestParam(value = "limit", defaultValue = "5") @Min(1) @Max(100) Integer limit) {
+      @RequestParam(value = "offset", defaultValue = "0") Integer offset,
+      @RequestParam(value = "limit", defaultValue = "5") Integer limit) {
     return ResponseEntity.ok(participantService.getAllParticipants(offset, limit));
   }
 

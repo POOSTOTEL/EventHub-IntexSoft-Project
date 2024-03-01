@@ -9,6 +9,8 @@ import java.util.List;
 public interface UserService {
   Page<UserDto> getAllUsers(Integer offset, Integer limit);
 
+  List<UserDto> getAllUsers();
+
   UserDto createUser(UserDto userDto);
 
   UserDto getUserByUserId(Long userId);

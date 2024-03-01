@@ -7,6 +7,7 @@ import com.Eventhub.EventHubIntexSoft.repository.CommentRepository;
 import com.Eventhub.EventHubIntexSoft.service.CommentService;
 import java.beans.FeatureDescriptor;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -28,6 +29,11 @@ public class CommentServiceImpl implements CommentService {
     return commentRepository
         .findAll(PageRequest.of(offset, limit))
         .map(commentMapper::toCommentDto);
+  }
+
+  public List<CommentDto> getAllComments() {
+    return commentMapper.toDtoList(commentRepository
+            .findAll());
   }
 
   public CommentDto createComment(CommentDto commentDto) {

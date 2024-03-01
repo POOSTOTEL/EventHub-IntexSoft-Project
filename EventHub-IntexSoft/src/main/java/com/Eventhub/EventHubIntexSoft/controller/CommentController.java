@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/comment")
@@ -25,8 +27,9 @@ public class CommentController {
 
   @GetMapping("/all")
   public ResponseEntity<Page<CommentDto>> allComments(
-      @RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset,
-      @RequestParam(value = "limit", defaultValue = "5") @Min(1) @Max(100) Integer limit) {
+      @RequestParam(value = "offset", defaultValue = "0") Integer offset,
+      @RequestParam(value = "limit", defaultValue = "5") Integer limit
+  ) {
     return ResponseEntity.ok(commentService.getAllComments(offset, limit));
   }
 
