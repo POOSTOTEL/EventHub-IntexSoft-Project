@@ -14,7 +14,6 @@ import java.util.Date;
 import java.util.function.Function;
 import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -25,12 +24,13 @@ public class JwtUtils {
   @Value("${eventhub.app.jwt.access.expiration-ms}")
   private int EXPIRATION_MS;
 
-  public String generateJwtToken(Authentication authentication) {
+  public String generateJwtToken(User userPrincipal) {
+    return generateTokenFromUsername(userPrincipal.getUsername());
+  }
 
-    User userPrincipal = (User) authentication.getPrincipal();
-
+  public String generateTokenFromUsername(String username) {
     return Jwts.builder()
-        .subject(userPrincipal.getUsername())
+        .subject(username)
         .issuedAt(new Date(System.currentTimeMillis()))
         .expiration(new Date(System.currentTimeMillis() + EXPIRATION_MS))
         .signWith(getSignKey(), SignatureAlgorithm.HS256)

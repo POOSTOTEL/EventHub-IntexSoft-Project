@@ -86,7 +86,7 @@ public class SecurityConfiguration {
                       "/participant/{participantId}",
                       "/user/{userId}")
                   .hasAuthority("ADMIN")
-                  .requestMatchers(HttpMethod.POST, "/auth/signup", "/auth/signin", "auth/refresh")
+                  .requestMatchers(HttpMethod.POST, "/auth/signup", "/auth/signin", "auth/refreshtoken")
                   .permitAll()
                   .anyRequest()
                   .authenticated();

@@ -79,10 +79,17 @@ public class UserValidator extends FieldValidator {
       throw new NotFoundException();
     }
   }
-
+//todo разделить метод на два, один для логина, второй для регистрации
   public void validateUniqUserName(String userName, Long userId) throws NonUniqValueException {
     User user = userRepository.findUserByUserName(userName);
     if (!Objects.isNull(user) && !user.getUserId().equals(userId)) {
+      throw new NonUniqValueException();
+    }
+  }
+  //todo ПЕРЕДЕЛАТЬ
+  public void validateUniqUserName(String userName) throws NonUniqValueException {
+    User user = userRepository.findUserByUserName(userName);
+    if (Objects.nonNull(user)) {
       throw new NonUniqValueException();
     }
   }
