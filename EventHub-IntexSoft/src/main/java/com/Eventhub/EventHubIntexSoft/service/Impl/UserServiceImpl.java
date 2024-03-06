@@ -14,13 +14,15 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
   private final UserRepository userRepository;
   private final UserMapper userMapper;
 
@@ -71,5 +73,10 @@ public class UserServiceImpl implements UserService {
         .map(FeatureDescriptor::getName)
         .filter(name -> wrapper.getPropertyValue(name) == null)
         .toArray(String[]::new);
+  }
+
+  @Override
+  public User loadUserByUsername(String username) throws UsernameNotFoundException {
+    return userRepository.findUserByUserName(username);
   }
 }

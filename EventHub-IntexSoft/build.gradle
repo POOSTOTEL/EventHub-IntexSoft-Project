@@ -54,7 +54,8 @@ dependencies {
     testImplementation 'io.rest-assured:spring-mock-mvc:5.4.0'
     testImplementation 'io.rest-assured:spring-web-test-client:5.4.0'
     //SpringSecurity
-    implementation 'org.springframework.boot:spring-boot-starter-security:3.1.5'
+    implementation 'org.springframework.boot:spring-boot-starter-security:3.2.3'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:3.2.3'
     //JWT
     implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.5'

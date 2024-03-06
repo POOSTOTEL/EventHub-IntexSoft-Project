@@ -2,9 +2,8 @@ package com.Eventhub.EventHubIntexSoft.service;
 
 import com.Eventhub.EventHubIntexSoft.dto.UserDto;
 import com.Eventhub.EventHubIntexSoft.entity.User;
-import org.springframework.data.domain.Page;
-
 import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface UserService {
   Page<UserDto> getAllUsers(Integer offset, Integer limit);
