@@ -6,8 +6,6 @@ import com.Eventhub.EventHubIntexSoft.exception.NonUniqValueException;
 import com.Eventhub.EventHubIntexSoft.exception.NotFoundException;
 import com.Eventhub.EventHubIntexSoft.service.EventService;
 import com.Eventhub.EventHubIntexSoft.validator.EventValidator;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;

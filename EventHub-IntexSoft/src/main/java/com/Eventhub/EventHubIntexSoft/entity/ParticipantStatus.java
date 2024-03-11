@@ -12,10 +12,11 @@ import lombok.Data;
 @Table(name = "participant_statuses")
 @Data
 public class ParticipantStatus {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "status_id")
-    private Long statusId;
-    @Column(name = "status")
-    private String status;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "status_id")
+  private Long statusId;
+
+  @Column(name = "status")
+  private String status;
 }

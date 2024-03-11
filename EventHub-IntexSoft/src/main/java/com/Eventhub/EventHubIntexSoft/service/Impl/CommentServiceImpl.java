@@ -32,8 +32,7 @@ public class CommentServiceImpl implements CommentService {
   }
 
   public List<CommentDto> getAllComments() {
-    return commentMapper.toDtoList(commentRepository
-            .findAll());
+    return commentMapper.toDtoList(commentRepository.findAll());
   }
 
   public CommentDto createComment(CommentDto commentDto) {

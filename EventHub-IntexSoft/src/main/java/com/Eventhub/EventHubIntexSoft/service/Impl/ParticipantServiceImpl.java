@@ -26,7 +26,7 @@ public class ParticipantServiceImpl implements ParticipantService {
   public Page<ParticipantDto> getAllParticipants(Integer offset, Integer limit) {
     return participantRepository
         .findAll(PageRequest.of(offset, limit))
-        .map(participant -> participantMapper.toParticipantDto(participant));
+        .map(participantMapper::toParticipantDto);
   }
 
   public ParticipantDto createParticipant(ParticipantDto participantDto) {

@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
-import java.util.Date;
-
 @RestControllerAdvice
 public class UserExceptionHandler {
   @ExceptionHandler(FormatException.class)

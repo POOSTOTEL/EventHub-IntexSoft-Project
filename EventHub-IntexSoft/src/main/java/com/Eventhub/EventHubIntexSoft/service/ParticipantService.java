@@ -3,8 +3,6 @@ package com.Eventhub.EventHubIntexSoft.service;
 import com.Eventhub.EventHubIntexSoft.dto.ParticipantDto;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
-
 public interface ParticipantService {
   Page<ParticipantDto> getAllParticipants(Integer offset, Integer limit);
 

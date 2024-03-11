@@ -68,7 +68,7 @@ public class UserValidator extends FieldValidator {
     }
   }
 
-  public void validateUserExistingByEmail (String email) throws NotFoundException {
+  public void validateUserExistingByEmail(String email) throws NotFoundException {
     if (Objects.isNull(userRepository.findUserByEmail(email))) {
       throw new NotFoundException();
     }
@@ -79,14 +79,16 @@ public class UserValidator extends FieldValidator {
       throw new NotFoundException();
     }
   }
-//todo разделить метод на два, один для логина, второй для регистрации
+
+  // todo разделить метод на два, один для логина, второй для регистрации
   public void validateUniqUserName(String userName, Long userId) throws NonUniqValueException {
     User user = userRepository.findUserByUserName(userName);
     if (!Objects.isNull(user) && !user.getUserId().equals(userId)) {
       throw new NonUniqValueException();
     }
   }
-  //todo ПЕРЕДЕЛАТЬ
+
+  // todo ПЕРЕДЕЛАТЬ
   public void validateUniqUserName(String userName) throws NonUniqValueException {
     User user = userRepository.findUserByUserName(userName);
     if (Objects.nonNull(user)) {
@@ -99,6 +101,7 @@ public class UserValidator extends FieldValidator {
       throw new FormatException();
     }
   }
+
   public void validateUniqEmail(String email) throws NonUniqValueException {
     User user = userRepository.findUserByEmail(email);
     if (Objects.nonNull(user)) {
@@ -113,7 +116,7 @@ public class UserValidator extends FieldValidator {
     }
   }
 
-  //todo дописать проверку ролей на корректность
+  // todo дописать проверку ролей на корректность
 
   public void validateCorrectPasswordFormat(String password) throws FormatException {
     if (!passwordPattern.matcher(password).find()) {

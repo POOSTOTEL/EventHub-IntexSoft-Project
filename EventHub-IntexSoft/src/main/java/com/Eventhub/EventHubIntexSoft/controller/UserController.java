@@ -7,9 +7,6 @@ import com.Eventhub.EventHubIntexSoft.exception.NonUniqValueException;
 import com.Eventhub.EventHubIntexSoft.exception.NotFoundException;
 import com.Eventhub.EventHubIntexSoft.service.UserService;
 import com.Eventhub.EventHubIntexSoft.validator.UserValidator;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -26,8 +23,7 @@ public class UserController {
   @GetMapping("/all")
   public ResponseEntity<Page<UserDto>> allUsers(
       @RequestParam(value = "offset", defaultValue = "0") Integer offset,
-      @RequestParam(value = "limit", defaultValue = "5") Integer limit
-  ) {
+      @RequestParam(value = "limit", defaultValue = "5") Integer limit) {
     return ResponseEntity.ok(userService.getAllUsers(offset, limit));
   }
 
