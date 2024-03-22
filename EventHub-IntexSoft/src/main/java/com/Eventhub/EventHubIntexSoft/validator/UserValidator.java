@@ -43,7 +43,7 @@ public class UserValidator extends FieldValidator {
 
   public void validateUserDtoSave(UserDto userDto)
       throws EmptyDtoFieldException, NonUniqValueException, FormatException {
-    validateUserName(userDto.getUserName(), userDto.getUserId());
+    validateUserName(userDto.getUsername(), userDto.getUserId());
     validateEmail(userDto.getEmail(), userDto.getUserId());
     validatePassword(userDto.getPassword());
   }
@@ -57,8 +57,8 @@ public class UserValidator extends FieldValidator {
   public void validateUserDtoPatch(UserDto userDto)
       throws NonUniqValueException, NotFoundException, EmptyDtoFieldException, FormatException {
     validateUserExistingByUserId(userDto.getUserId());
-    if (Objects.nonNull(userDto.getUserName())) {
-      validateUserName(userDto.getUserName(), userDto.getUserId());
+    if (Objects.nonNull(userDto.getUsername())) {
+      validateUserName(userDto.getUsername(), userDto.getUserId());
     }
     if (Objects.nonNull(userDto.getEmail())) {
       validateEmail(userDto.getEmail(), userDto.getUserId());

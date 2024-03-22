@@ -63,34 +63,37 @@ public class SecurityConfiguration {
         .authorizeHttpRequests(
             req -> {
               req.requestMatchers(
-                      HttpMethod.GET,
-                      "/comment/{commentId}",
-                      "/comment/all",
-                      "/event/{eventId}",
-                      "/event/all",
-                      "/participant/{participantId}",
-                      "/participant/all",
-                      "/user/{userId}",
-                      "/user/all")
-                  .hasAuthority("USER")
-                  .requestMatchers(HttpMethod.POST, "/comment", "/event", "/participant", "/user")
-                  .hasAuthority("ADMIN")
-                  .requestMatchers(HttpMethod.PUT, "/comment", "/event", "/participant", "/user")
-                  .hasAuthority("ADMIN")
-                  .requestMatchers(HttpMethod.PATCH, "/comment", "/event", "/participant", "/user")
-                  .hasAuthority("ADMIN")
-                  .requestMatchers(
-                      HttpMethod.DELETE,
-                      "/comment/{commentId}",
-                      "/event/{eventId}",
-                      "/participant/{participantId}",
-                      "/user/{userId}")
-                  .hasAuthority("ADMIN")
-                  .requestMatchers(
-                      HttpMethod.POST, "/auth/signup", "/auth/signin", "auth/refreshtoken")
-                  .permitAll()
-                  .anyRequest()
-                  .authenticated();
+                              HttpMethod.GET,
+                              "/comment/{commentId}",
+                              "/comment/all",
+                              "/event/{eventId}",
+                              "/event/all",
+                              "/participant/{participantId}",
+                              "/participant/all",
+                              "/user/{userId}",
+                              "/user/all")
+                      .hasAuthority("USER")
+                      .requestMatchers(HttpMethod.POST, "/comment", "/event", "/participant", "/user")
+                      .hasAuthority("ADMIN")
+                      .requestMatchers(HttpMethod.PUT, "/comment", "/event", "/participant", "/user")
+                      .hasAuthority("ADMIN")
+                      .requestMatchers(HttpMethod.PATCH, "/comment", "/event", "/participant", "/user")
+                      .hasAuthority("ADMIN")
+                      .requestMatchers(
+                              HttpMethod.DELETE,
+                              "/comment/{commentId}",
+                              "/event/{eventId}",
+                              "/participant/{participantId}",
+                              "/user/{userId}")
+                      .hasAuthority("ADMIN")
+                      .requestMatchers(
+                              HttpMethod.POST, "/signup", "/signin", "/refreshtoken", "/signin/oauth2/github", "/signin/oauth2/github/auth")
+                      .permitAll()
+                      .requestMatchers(
+                              HttpMethod.GET, "/signin/oauth2/github", "/signin/oauth2/github/auth")
+                      .permitAll()
+                      .anyRequest()
+                      .authenticated();
             })
         .sessionManagement(
             sessionAuthStrategy ->

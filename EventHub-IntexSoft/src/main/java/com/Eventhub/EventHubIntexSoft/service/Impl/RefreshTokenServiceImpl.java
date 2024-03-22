@@ -2,9 +2,12 @@ package com.Eventhub.EventHubIntexSoft.service.Impl;
 
 import com.Eventhub.EventHubIntexSoft.entity.RefreshToken;
 import com.Eventhub.EventHubIntexSoft.exception.TokenRefreshException;
+import com.Eventhub.EventHubIntexSoft.payload.request.TokenRefreshRequest;
+import com.Eventhub.EventHubIntexSoft.payload.response.TokenRefreshResponse;
 import com.Eventhub.EventHubIntexSoft.repository.RefreshTokenRepository;
 import com.Eventhub.EventHubIntexSoft.repository.UserRepository;
 import com.Eventhub.EventHubIntexSoft.service.RefreshTokenService;
+import com.Eventhub.EventHubIntexSoft.util.JwtUtils;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -20,7 +23,26 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
   protected final RefreshTokenRepository refreshTokenRepository;
 
+  protected final JwtUtils jwtUtils;
+
   protected final UserRepository userRepository;
+
+  @Override
+  public TokenRefreshResponse giveAccessToken(TokenRefreshRequest request) {
+    String requestRefreshToken = request.getRefreshToken();
+    return findByToken(requestRefreshToken)
+        .map(this::verifyExpiration)
+        .map(RefreshToken::getUser)
+        .map(
+            user -> {
+              String token = jwtUtils.generateTokenFromUsername(user.getUsername());
+              return new TokenRefreshResponse(token, requestRefreshToken);
+            })
+        .orElseThrow(
+            () ->
+                new TokenRefreshException(
+                    requestRefreshToken, "Refresh token is not in database!"));
+  }
 
   public Optional<RefreshToken> findByToken(String token) {
     return refreshTokenRepository.findByToken(token);

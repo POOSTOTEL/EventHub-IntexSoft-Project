@@ -37,7 +37,7 @@ public abstract class ParticipantMapper {
 
   public abstract List<Participant> toParticipantList(List<ParticipantDto> dtoList);
 
-  public abstract List<ParticipantDto> toDtoList(List<Participant> modelList);
+  public abstract List<ParticipantDto> toParticipantDtoList(List<Participant> modelList);
 
   @Named("eventToEventId")
   protected Long eventToEventId(Event event) {
