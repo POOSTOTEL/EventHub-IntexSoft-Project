@@ -49,17 +49,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     roles.add(userRoleRepository.findUserRoleByRole("USER"));
     return oAuth2TokenService.createOAuth2Token(
         OAuth2Token.builder()
-            .accessToken(gitHubAuthorizeResponse.getAccess_token())
+            .accessToken(gitHubAuthorizeResponse.access_token())
             .vendorInfo("GIT_HUB")
             .user(
                 User.builder()
                     .userName(
-                        Objects.nonNull(gitHubUserRequest.name)
-                            ? gitHubUserRequest.name
-                            : gitHubUserRequest.login)
+                        Objects.nonNull(gitHubUserRequest.name())
+                            ? gitHubUserRequest.name()
+                            : gitHubUserRequest.login())
                     .roles(roles)
                     .email(
-                        Objects.nonNull(gitHubUserRequest.email) ? gitHubUserRequest.email : null)
+                        Objects.nonNull(gitHubUserRequest.email()) ? gitHubUserRequest.email() : null)
                     .build())
             .build());
   }
@@ -70,7 +70,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         .setAuthentication(
             authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                    loginRequest.getUsername(), loginRequest.getPassword())));
+                    loginRequest.username(), loginRequest.password())));
     User userDetails = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     return JwtResponse.builder()
         .token(jwtUtils.generateJwtToken(userDetails))
@@ -90,11 +90,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     return userMapper.toUserDto(
         userRepository.save(
             User.builder()
-                .userName(signUpRequest.getUsername())
-                .email(signUpRequest.getEmail())
-                .password(encoder.encode(signUpRequest.getPassword()))
+                .userName(signUpRequest.username())
+                .email(signUpRequest.email())
+                .password(encoder.encode(signUpRequest.password()))
                 .roles(
-                    Optional.of(signUpRequest.getRoles())
+                    Optional.of(signUpRequest.roles())
                         .map(
                             (strRoles) ->
                                 strRoles.stream()

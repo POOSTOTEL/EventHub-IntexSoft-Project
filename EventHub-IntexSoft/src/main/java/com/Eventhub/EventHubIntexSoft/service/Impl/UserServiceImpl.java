@@ -62,7 +62,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     return userRepository.findUserByEmail(email);
   }
 
-  @Transactional(isolation = Isolation.READ_COMMITTED)
   public void deleteUserByUserId(Long userId) {
     userRepository.deleteUserByUserId(userId);
   }

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 @RestControllerAdvice
-public class UserExceptionHandler {
+public class GlobalExceptionHandler {
   @ExceptionHandler(FormatException.class)
   public ResponseEntity<ErrorMessage> formatException(FormatException exception) {
     return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)

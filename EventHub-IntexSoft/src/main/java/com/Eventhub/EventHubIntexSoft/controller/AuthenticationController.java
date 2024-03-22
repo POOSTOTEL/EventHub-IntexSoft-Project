@@ -95,14 +95,13 @@ public class AuthenticationController {
                 .uri("/user")
                 .header(
                     "Authorization",
-                    gitHubAuthorizeResponse.getToken_type()
+                    gitHubAuthorizeResponse.token_type()
                         + " "
-                        + gitHubAuthorizeResponse.getAccess_token())
+                        + gitHubAuthorizeResponse.access_token())
                 .retrieve()
                 .bodyToMono(GitHubUserRequest.class)
                 .block();
-        // userValidator.validateUserExistingByEmail(Objects.nonNull());
-        if (Objects.nonNull(gitHubUserRequest.login)) {
+        if (Objects.nonNull(gitHubUserRequest.login())) {
           return ResponseEntity.ok(
               authenticationService.signUpGitHub(gitHubAuthorizeResponse, gitHubUserRequest));
         } else {
@@ -120,8 +119,8 @@ public class AuthenticationController {
   @PostMapping("/signup")
   public ResponseEntity<UserDto> registerUser(@Valid @RequestBody SignupRequest signUpRequest)
       throws NonUniqValueException {
-    userValidator.validateUniqUserName(signUpRequest.getUsername());
-    userValidator.validateUniqEmail(signUpRequest.getEmail());
+    userValidator.validateUniqUserName(signUpRequest.username());
+    userValidator.validateUniqEmail(signUpRequest.email());
     return ResponseEntity.ok(authenticationService.signUpLocale(signUpRequest));
   }
 

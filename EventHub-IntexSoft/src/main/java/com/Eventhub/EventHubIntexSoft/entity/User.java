@@ -1,6 +1,5 @@
 package com.Eventhub.EventHubIntexSoft.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -10,7 +9,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import java.util.Collection;
@@ -62,12 +60,13 @@ public class User implements UserDetails {
         .collect(Collectors.toList());
   }
 
-
   @Override
   public String getUsername() {
     return userName;
   }
-  //todo нужно переименовать поле userName на username, но я не знаю как сделать это безболезненно...
+
+  // todo нужно переименовать поле userName на username, но я не знаю как сделать это
+  // безболезненно...
   public String getUserName() {
     return userName;
   }
