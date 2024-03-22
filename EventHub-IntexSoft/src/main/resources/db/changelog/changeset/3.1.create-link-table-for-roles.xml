@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="Removing user_role from users" author="poostotel">
+        <dropColumn tableName="users" columnName="user_role"/>
+    </changeSet>
+
+    <changeSet id="Creating table user_role_relations" author="poostotel">
+        <createTable tableName="user_role_relations" remarks="The table of relations between users and their roles.">
+            <column name="user_id" type="SERIAL" remarks="Serial numbers of users in the database.">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_user_role_relations"/>
+            </column>
+            <column name="role_id" type="SERIAL" remarks="Serial numbers of roles in the database.">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_user_role_relations"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="fk_user_role_relations_to_users"
+                                 baseTableName="user_role_relations" baseColumnNames="user_id"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint constraintName="fk_user_role_relations_to_user_roles"
+                                 baseTableName="user_role_relations" baseColumnNames="role_id"
+                                 referencedTableName="user_roles" referencedColumnNames="role_id"/>
+    </changeSet>
+</databaseChangeLog>

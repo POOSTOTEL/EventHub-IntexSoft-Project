@@ -1,7 +1,6 @@
 package com.Eventhub.EventHubIntexSoft.validator;
 
 import com.Eventhub.EventHubIntexSoft.exception.EmptyDtoFieldException;
-
 import java.util.Objects;
 
 public abstract class FieldValidator {

@@ -1,6 +1,5 @@
 package com.Eventhub.EventHubIntexSoft.entity;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import lombok.Data;

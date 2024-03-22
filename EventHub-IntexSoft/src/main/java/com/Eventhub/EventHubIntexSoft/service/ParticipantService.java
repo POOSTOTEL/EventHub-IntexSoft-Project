@@ -1,10 +1,10 @@
 package com.Eventhub.EventHubIntexSoft.service;
 
 import com.Eventhub.EventHubIntexSoft.dto.ParticipantDto;
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface ParticipantService {
-  List<ParticipantDto> getAllParticipants();
+  Page<ParticipantDto> getAllParticipants(Integer offset, Integer limit);
 
   ParticipantDto createParticipant(ParticipantDto participantDto);
 

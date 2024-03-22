@@ -2,10 +2,10 @@ package com.Eventhub.EventHubIntexSoft.service;
 
 import com.Eventhub.EventHubIntexSoft.dto.EventDto;
 import com.Eventhub.EventHubIntexSoft.entity.Event;
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface EventService {
-  List<EventDto> getAllEvents();
+  Page<EventDto> getAllEvents(Integer offset, Integer limit);
 
   EventDto createEvent(EventDto eventDto);
 

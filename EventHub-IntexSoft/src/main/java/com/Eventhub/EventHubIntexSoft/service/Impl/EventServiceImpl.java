@@ -6,12 +6,13 @@ import com.Eventhub.EventHubIntexSoft.mapper.EventMapper;
 import com.Eventhub.EventHubIntexSoft.repository.EventRepository;
 import com.Eventhub.EventHubIntexSoft.service.EventService;
 import java.beans.FeatureDescriptor;
-import java.util.List;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,8 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class EventServiceImpl implements EventService {
   private final EventRepository eventRepository;
 
-  public List<EventDto> getAllEvents() {
-    return EventMapper.instance.toDtoList(eventRepository.findAll());
+  public Page<EventDto> getAllEvents(Integer offset, Integer limit) {
+    return eventRepository
+        .findAll(PageRequest.of(offset, limit))
+        .map(EventMapper.instance::toEventDto);
   }
 
   public EventDto createEvent(EventDto eventDto) {

@@ -71,7 +71,7 @@ public class UserControllerIntegrationTest {
   void testCreateNotExistUser() {
     UserDto userDto = new UserDto();
     userDto.setUserId(14L);
-    userDto.setUserName("Benedicto");
+    userDto.setUsername("Benedicto");
     userDto.setEmail("example123@gmail.com");
     userDto.setPassword("QWERTY%qwerty12");
     RestAssured.given()
@@ -96,7 +96,7 @@ public class UserControllerIntegrationTest {
   void testCreateExistUser() {
     UserDto userDto = new UserDto();
     userDto.setUserId(null);
-    userDto.setUserName("Pablo");
+    userDto.setUsername("Pablo");
     userDto.setEmail("pablo123@mail.de");
     userDto.setPassword("qWErty%1234");
     RestAssured.given()
@@ -146,7 +146,7 @@ public class UserControllerIntegrationTest {
   void updateExistUserWithUniqData() {
     UserDto userDto = new UserDto();
     userDto.setUserId(321L);
-    userDto.setUserName("Petro");
+    userDto.setUsername("Petro");
     userDto.setEmail("petro1989@mail.de");
     userDto.setPassword("qWEloy%8235");
     RestAssured.given()
@@ -170,7 +170,7 @@ public class UserControllerIntegrationTest {
   void updateExistUserWithNonUniqData() {
     UserDto userDto = new UserDto();
     userDto.setUserId(321L);
-    userDto.setUserName("Pablo");
+    userDto.setUsername("Pablo");
     userDto.setEmail("ento912@mail.fe");
     userDto.setPassword("qWEloy%8235");
     RestAssured.given()
@@ -190,7 +190,7 @@ public class UserControllerIntegrationTest {
   void updateNonExistUser() {
     UserDto userDto = new UserDto();
     userDto.setUserId(320L);
-    userDto.setUserName("Mazeratti");
+    userDto.setUsername("Mazeratti");
     userDto.setEmail("petro1989@mail.de");
     userDto.setPassword("qWEloy%8235");
     RestAssured.given()
@@ -205,7 +205,7 @@ public class UserControllerIntegrationTest {
   void patchExistUserWithUniqData() {
     UserDto userDto = new UserDto();
     userDto.setUserId(321L);
-    userDto.setUserName("Petro");
+    userDto.setUsername("Petro");
     userDto.setEmail(null);
     userDto.setPassword("qWEloy%8235");
     RestAssured.given()
@@ -229,7 +229,7 @@ public class UserControllerIntegrationTest {
   void patchExistUserWithNonUniqData() {
     UserDto userDto = new UserDto();
     userDto.setUserId(321L);
-    userDto.setUserName("Pablo");
+    userDto.setUsername("Pablo");
     userDto.setEmail("ento912@mail.fe");
     userDto.setPassword(null);
     RestAssured.given()
@@ -249,7 +249,7 @@ public class UserControllerIntegrationTest {
   void patchNonExistUser() {
     UserDto userDto = new UserDto();
     userDto.setUserId(320L);
-    userDto.setUserName("Mazeratti");
+    userDto.setUsername("Mazeratti");
     userDto.setEmail(null);
     userDto.setPassword(null);
     RestAssured.given()

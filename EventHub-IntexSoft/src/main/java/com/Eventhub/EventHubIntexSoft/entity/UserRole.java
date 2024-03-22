@@ -16,10 +16,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class UserRole {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "role_id")
-    private Long roleId;
-    @Column(name = "role")
-    private String role;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "role_id")
+  private Long roleId;
+
+  @Column(name = "role")
+  private String role;
+
+  public UserRole(String role) {
+    this.role = role;
+  }
 }

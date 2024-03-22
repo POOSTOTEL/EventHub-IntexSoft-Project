@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="Creating table oauth2_tokens" author="poostotel">
+        <createTable tableName="oauth2_tokens">
+            <column name="token_id" type="serial" remarks="The primary key for the oauth2_tokens table.">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="access_token" type="varchar(255)" remarks="The OAuth2 token.">
+                <constraints nullable="false"/>
+            </column>
+            <column name="vendor_info" type="text" remarks="The vendor of the OAuth2 token."/>
+            <column name="user_id" type="integer"
+                    remarks="The foreign key that references the user_id in the users table.">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="fk_oauth2_tokens_users"
+                                 baseTableName="oauth2_tokens" baseColumnNames="user_id"
+                                 referencedTableName="users" referencedColumnNames="user_id"
+                                 onDelete="CASCADE"/>
+    </changeSet>
+
+</databaseChangeLog>

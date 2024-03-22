@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommentServiceImpl implements CommentService {
   private final CommentRepository commentRepository;
   private final CommentMapper commentMapper;
+
+  public Page<CommentDto> getAllComments(Integer offset, Integer limit) {
+    return commentRepository
+        .findAll(PageRequest.of(offset, limit))
+        .map(commentMapper::toCommentDto);
+  }
 
   public List<CommentDto> getAllComments() {
     return commentMapper.toDtoList(commentRepository.findAll());

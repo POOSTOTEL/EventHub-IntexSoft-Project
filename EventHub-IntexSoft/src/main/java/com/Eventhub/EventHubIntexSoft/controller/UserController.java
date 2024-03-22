@@ -7,8 +7,8 @@ import com.Eventhub.EventHubIntexSoft.exception.NonUniqValueException;
 import com.Eventhub.EventHubIntexSoft.exception.NotFoundException;
 import com.Eventhub.EventHubIntexSoft.service.UserService;
 import com.Eventhub.EventHubIntexSoft.validator.UserValidator;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +21,10 @@ public class UserController {
   private final UserValidator userValidator;
 
   @GetMapping("/all")
-  public ResponseEntity<List<UserDto>> allUsers() {
-    return ResponseEntity.ok(userService.getAllUsers());
+  public ResponseEntity<Page<UserDto>> allUsers(
+      @RequestParam(value = "offset", defaultValue = "0") Integer offset,
+      @RequestParam(value = "limit", defaultValue = "5") Integer limit) {
+    return ResponseEntity.ok(userService.getAllUsers(offset, limit));
   }
 
   @PostMapping

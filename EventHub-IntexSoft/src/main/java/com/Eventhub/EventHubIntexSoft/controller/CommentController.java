@@ -6,8 +6,8 @@ import com.Eventhub.EventHubIntexSoft.exception.FormatException;
 import com.Eventhub.EventHubIntexSoft.exception.NotFoundException;
 import com.Eventhub.EventHubIntexSoft.service.CommentService;
 import com.Eventhub.EventHubIntexSoft.validator.CommentValidator;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +21,10 @@ public class CommentController {
   private final CommentValidator commentValidator;
 
   @GetMapping("/all")
-  public ResponseEntity<List<CommentDto>> allComments() {
-    return ResponseEntity.ok(commentService.getAllComments());
+  public ResponseEntity<Page<CommentDto>> allComments(
+      @RequestParam(value = "offset", defaultValue = "0") Integer offset,
+      @RequestParam(value = "limit", defaultValue = "5") Integer limit) {
+    return ResponseEntity.ok(commentService.getAllComments(offset, limit));
   }
 
   @PostMapping

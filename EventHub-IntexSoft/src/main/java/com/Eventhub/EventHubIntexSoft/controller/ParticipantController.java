@@ -7,16 +7,8 @@ import com.Eventhub.EventHubIntexSoft.exception.NonUniqValueException;
 import com.Eventhub.EventHubIntexSoft.exception.NotFoundException;
 import com.Eventhub.EventHubIntexSoft.service.ParticipantService;
 import com.Eventhub.EventHubIntexSoft.validator.ParticipantValidator;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,8 +21,10 @@ public class ParticipantController {
   private final ParticipantValidator participantValidator;
 
   @GetMapping("/all")
-  public ResponseEntity<List<ParticipantDto>> allParticipants() {
-    return ResponseEntity.ok(participantService.getAllParticipants());
+  public ResponseEntity<Page<ParticipantDto>> allParticipants(
+      @RequestParam(value = "offset", defaultValue = "0") Integer offset,
+      @RequestParam(value = "limit", defaultValue = "5") Integer limit) {
+    return ResponseEntity.ok(participantService.getAllParticipants(offset, limit));
   }
 
   @PostMapping
